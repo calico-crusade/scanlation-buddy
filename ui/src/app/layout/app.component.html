@@ -52,7 +52,7 @@
             </h2>
             <a class="nav-item" routerLink="/account" routerLinkActive="active">
                 <span><box-icon>edit</box-icon></span>
-                <p>{{ user.nickname }}</p>
+                <p>{{ user.username }}</p>
             </a>
             <a class="nav-item" (click)="logout()">
                 <span><box-icon>logout</box-icon></span>
@@ -97,15 +97,28 @@
                 Website not affilated with or endorsed by <a href="https://mangadex.org" target="_blank">MangaDex</a>.
             </p>
         </aside>
-        <main>
-            <router-outlet></router-outlet>
-        </main>
-    
-        <button class="float-icon" (click)="drawerOpen = !drawerOpen">
-            <box-icon>menu</box-icon>
-        </button>
-    
-        <app-chat-popup></app-chat-popup>
+        <div class="body" *ngIf="user$ | async as user">
+            <header>
+                <a class="menu-icon" (click)="drawerOpen = !drawerOpen">
+                    <box-icon>sort</box-icon>
+                </a>
+                <a class="menu-icon" routerLink="/">ScanlationBuddy</a>
+
+                <div class="bump"></div>
+                
+                <a (click)="chatapp.showPopup = !chatapp.showPopup">
+                    <box-icon>notifications_active</box-icon>
+                </a>
+                <a routerLink="/account">
+                    <img [src]="user.avatar" />
+                </a>
+            </header>
+            <main>
+                <router-outlet></router-outlet>
+            </main>
+            <app-chat-popup #chatapp></app-chat-popup>
+        </div>
+
     </div>
     
     <div class="content" *ngSwitchCase="1">

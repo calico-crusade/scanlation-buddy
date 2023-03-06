@@ -20,10 +20,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Scripts\00-00-read-me.txt">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Scripts\0T-01-create-buddy-user.sql">
+	  <None Update="Scripts\**">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	</ItemGroup>

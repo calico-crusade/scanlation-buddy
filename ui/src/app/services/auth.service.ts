@@ -1,41 +1,50 @@
 import { PlatformLocation } from "@angular/common";
 import { Injectable } from "@angular/core";
 import { HttpService } from "@cardboard-box/ngx-box";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, map } from "rxjs";
 import { environment } from "src/environments/environment";
 import { ConfigService } from "./config.service";
+import { BuddyRole, BuddyUser } from "./models";
 
 export enum LoginState {
     NotLoggedIn = 99,
     LoginInProgress = 1,
     LoginSuccess = 2,
     LoginFailure = 3,
-    NotVerified = 4,
-    FirstTimeLogin = 5
+    NotVerified = 4
+}
+
+export interface LoginResponse {
+    token?: string;
+    error?: string;
+    profile?: BuddyUser;
+    roles?: BuddyRole[];
 }
 
 export interface AuthCodeResponse {
-    error?: string;
-    user?: AuthUser;
     token?: string;
+    error?: string;
 }
 
-export interface AuthUser {
-    nickname: string;
-    avatar: string;
-    id: string;
-    email: string;
-    roles: string[];
+export interface MeResponse {
+    profile: BuddyUser;
+    roles: BuddyRole[];
 }
+
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
     private _stateSub = new BehaviorSubject<LoginState>(LoginState.NotLoggedIn);
-    private _userSub = new BehaviorSubject<AuthUser | undefined>(undefined);
+    private _userSub = new BehaviorSubject<BuddyUser | undefined>(undefined);
+    private _roleSub = new BehaviorSubject<BuddyRole[]>([]);
 
-    get onState() { return this._stateSub.asObservable(); }
-    get onUser() { return this._userSub.asObservable(); }
+    state$ = this._stateSub.asObservable();
+    user$ = this._userSub.asObservable();
+    roles$ = this._roleSub.asObservable();
+    perms$ = this.roles$.pipe(
+        map(t => t.map(t => t.permissions).flat().filter((value, index, array) => array.indexOf(value) === index))
+    );
 
     get isLoggingIn() { return this._stateSub.value === LoginState.LoginInProgress; }
 
@@ -51,33 +60,42 @@ export class AuthService {
     ) { }
 
 
-    async bump() {
+    async bump(): Promise<LoginResponse> {
         this._stateSub.next(LoginState.LoginInProgress);
         if (!this.config.token || this.config.token == null) {
             this._userSub.next(undefined);
             this._stateSub.next(LoginState.NotLoggedIn);
-            return false;
+            return { error: 'Token is not set.' };
         }
 
         try {
             let me = await this.me().promise;
-            this._userSub.next(me);
+            this._userSub.next(me.profile);
+            this._roleSub.next(me.roles);
             if (me.roles.length === 0) {
+                try {
+                    const { worked } = await this.promptFirstTime().promise;
+                    if (worked) {
+                        alert('First time setup detected. Please login again.');
+                        return await this.login();
+                    }
+                } catch {}
+
                 this._stateSub.next(LoginState.NotVerified);
-                return false;
+                return { error: 'Not verified!' };
             }
 
             this._stateSub.next(LoginState.LoginSuccess);
-            return true;
+            return { profile: me.profile, roles: me.roles };
         } catch (e) {
             console.warn('Error occurred while fetching profile', { e });
             this._userSub.next(undefined);
             this._stateSub.next(LoginState.LoginFailure);
-            return false;
+            return { error: 'Error occurred while fetching profile' };
         }
     }
 
-    async login(): Promise<AuthCodeResponse> {
+    async login(): Promise<LoginResponse> {
         this._stateSub.next(LoginState.LoginInProgress);
 
         let code = await this.doLoginPopup();
@@ -98,29 +116,15 @@ export class AuthService {
         window.location.href = url;
     }
 
-    async handleCode(code: string): Promise<AuthCodeResponse> {
+    async handleCode(code: string): Promise<LoginResponse> {
         let auth = await this.resolve(code).promise;
         if (!auth || auth.error || !auth.token) {
             this.config.token = null;
             return auth || { error: 'Error occurred while logging in' };
         }
         
-        let state = auth.user?.roles.length === 0 ? LoginState.NotVerified : LoginState.LoginSuccess;
-
-        if (state === LoginState.NotVerified) {
-            try {
-                const { worked } = await this.promptFirstTime().promise;
-                if (worked) {
-                    alert('First time setup detected. Please login again.');
-                    return await this.login();
-                }
-            } catch {}
-        }
-
         this.config.token = auth.token;
-        this._userSub.next(auth.user);
-        this._stateSub.next(state);
-        return auth;
+        return await this.bump();
     }
 
     logout() {
@@ -166,7 +170,7 @@ export class AuthService {
 
     private resolve(code: string) { return this.http.get<AuthCodeResponse>(`auth/${code}`); }
 
-    private me() { return this.http.get<AuthUser>(`/auth`); }
+    private me() { return this.http.get<MeResponse>(`/auth`); }
 
     private promptFirstTime() { return this.http.get<{ worked: boolean }>(`auth/is-first-time`); }
 

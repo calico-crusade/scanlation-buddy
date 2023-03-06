@@ -20,7 +20,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\ScanlationBuddy\ScanlationBuddy.csproj" />
+	  <ProjectReference Include="..\ScanlationBuddy.Database\ScanlationBuddy.Database.csproj" />
 	</ItemGroup>
 
 </Project>

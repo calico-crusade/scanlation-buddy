@@ -1,8 +1,5 @@
 ﻿namespace ScanlationBuddy.Web.Controllers;
 
-using Auth;
-using Database;
-
 [ApiController]
 public class AuthController : ControllerBase
 {
@@ -40,57 +37,62 @@ public class AuthController : ControllerBase
 			ProviderId = res.User.ProviderId,
 		};
 
-		var id = await _db.Users.Upsert(user);
+		await _db.Users.Upsert(user);
 		user = await _db.Users.Fetch(res.User.Id);
 
-		var roles = user.Roles.Split(',', StringSplitOptions.RemoveEmptyEntries);
-		var token = _token.GenerateToken(res, roles);
-
-		return Ok(new {
-			user = new
-			{
-				roles,
-				nickname = res.User.Nickname,
-				avatar = res.User.Avatar,
-				id = res.User.Id,
-				email = res.User.Email
-			},
-			token,
-			id
+		var token = _token.GenerateToken(t =>
+		{
+			t[ClaimTypes.NameIdentifier] = user.Id.ToString();
 		});
+
+		return Ok(new { token });
 	}
 
 	[HttpGet, Route("api/auth"), Authorize]
-	public IActionResult Me()
+	public async Task<IActionResult> Me()
 	{
-		var user = this.UserFromIdentity();
-		if (user == null) return Unauthorized();
+		var id = this.Id();
+		if (id == null) return Unauthorized();
 
-		var roles = User.Claims.Where(t => t.Type == ClaimTypes.Role).Select(t => t.Value).ToArray();
+		var profile = await _db.Users.Fetch(id.Value);
+		if (profile == null) return Unauthorized();
+
+		var roles = await _db.Roles.Roles(profile.Id);
 
 		return Ok(new
 		{
 			roles,
-			nickname = user.Nickname,
-			avatar = user.Avatar,
-			id = user.Id,
-			email = user.Email
+			profile
 		});
 	}
 
 	[HttpGet, Route("api/auth/is-first-time"), Authorize]
 	public async Task<IActionResult> SetupFirstTime()
 	{
-		var user = this.UserFromIdentity();
-		if (user == null) return Unauthorized();
+		var id = this.Id();
+		if (id == null) return Unauthorized();
 
-		var profile = await _db.Users.Fetch(user.Id);
+		var profile = await _db.Users.Fetch(id.Value);
 		if (profile == null) return NotFound();
 
-		var count = await _db.Users.UserCount();
-		if (count != 1) return BadRequest();
+		var userCount = await _db.Users.UserCount();
+		if (userCount != 1) return BadRequest();
 
-		await _db.Users.UpdateRoles(profile.Id, ROLE_ADMIN);
+		var roleCount = await _db.Roles.RoleCount();
+		if (roleCount <= 0)
+			await _db.Roles.Insert(new BuddyRole
+			{
+				Name = "Site Owner",
+				Description = "The overlord of the application. All shall bow down before this user's majesty.",
+				Permissions = PERMS_ALL,
+				Color = "#726ae4",
+				BadgeId = null,
+				CreatorId = profile.Id
+			});
+
+		var roles = (await _db.Roles.All()).Select(t => t.Id);
+		foreach (var role in roles)
+			await _db.Roles.ToggleRole(profile.Id, role, profile.Id);
 
 		return Ok(new { worked = true });
 	}

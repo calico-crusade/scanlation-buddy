@@ -7,6 +7,7 @@ namespace ScanlationBuddy.Auth;
 public interface ITokenService
 {
 	TokenResult ParseToken(string token);
+	string GenerateToken(Action<JwtToken> config);
 	string GenerateToken(TokenResponse resp, params string[] roles);
 }
 
@@ -50,20 +51,29 @@ public class TokenService : ITokenService
 
 	public string GenerateToken(TokenResponse resp, params string[] roles)
 	{
-		int? expires = int.TryParse(_config["OAuth:ExpiryMinutes"], out int mins) ? mins : null;
-
-		return new JwtToken(GetKey())
-			.SetAudience(_config["OAuth:Audience"])
-			.SetIssuer(_config["OAuth:Issuer"])
-			.Expires(expires)
-			.AddClaim(ClaimTypes.NameIdentifier, resp.User.Id)
+		return GenerateToken(t =>
+		{
+			t.AddClaim(ClaimTypes.NameIdentifier, resp.User.Id)
 			.AddClaim(ClaimTypes.Name, resp.User.Nickname)
 			.AddClaim(ClaimTypes.Email, resp.User.Email)
 			.AddClaim(ClaimTypes.UserData, resp.User.Avatar)
 			.AddClaim(ClaimTypes.PrimarySid, resp.Provider)
 			.AddClaim(ClaimTypes.PrimaryGroupSid, resp.User.ProviderId)
-			.AddClaim(roles.Select(t => new Claim(ClaimTypes.Role, t)).ToArray())
-			.Write();
+			.AddClaim(roles.Select(t => new Claim(ClaimTypes.Role, t)).ToArray());
+		});
+	}
+
+	public string GenerateToken(Action<JwtToken> config)
+	{
+		int? expires = int.TryParse(_config["OAuth:ExpiryMinutes"], out int mins) ? mins : null;
+		var token = new JwtToken(GetKey())
+			.SetAudience(_config["OAuth:Audience"])
+			.SetIssuer(_config["OAuth:Issuer"])
+			.Expires(expires);
+
+		config?.Invoke(token);
+
+		return token.Write();
 	}
 }
 

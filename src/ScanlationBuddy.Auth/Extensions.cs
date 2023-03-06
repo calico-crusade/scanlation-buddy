@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace ScanlationBuddy.Auth;
@@ -14,23 +12,9 @@ public static class Extensions
 			.AddTransient<IOAuthService, OAuthService>()
 			.AddAuthentication(opt =>
 			{
-				opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-				opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-				opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+				opt.DefaultScheme = AuthMiddleware.SCHEMA;
 			})
-			.AddJwtBearer(opt =>
-			{
-				opt.SaveToken = true;
-				opt.RequireHttpsMetadata = false;
-				opt.TokenValidationParameters = new TokenValidationParameters
-				{
-					ValidateIssuer = true,
-					ValidateAudience = true,
-					ValidAudience = config["OAuth:Audience"],
-					ValidIssuer = config["OAuth:Issuer"],
-					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["OAuth:Key"]))
-				};
-			});
+			.AddScheme<AuthMiddlewareOptions, AuthMiddleware>(AuthMiddleware.SCHEMA, c => { });
 		return services;
 	}
 
@@ -49,30 +33,24 @@ public static class Extensions
 		return ctrl.User.Claim(claim);
 	}
 
-	public static TokenUser? UserFromIdentity(this ControllerBase ctrl)
+	public static long? Id(this ControllerBase ctrl)
 	{
 		if (ctrl.User == null) return null;
 
-		return ctrl.User.UserFromIdentity();
+		return ctrl.User.Id();
 	}
 
-	public static TokenUser? UserFromIdentity(this ClaimsPrincipal principal)
+	public static long? Id(this ClaimsPrincipal prin)
 	{
-		if (principal == null) return null;
+		if (prin == null) return null;
 
-		var getClaim = (string key) => principal.Claim(key) ?? "";
+		var getClaim = (string key) => prin.Claim(key) ?? "";
 
-		var id = getClaim(ClaimTypes.NameIdentifier);
-		if (string.IsNullOrEmpty(id)) return null;
+		var strId = getClaim(ClaimTypes.NameIdentifier);
 
-		return new TokenUser
-		{
-			Id = id,
-			Nickname = getClaim(ClaimTypes.Name),
-			Email = getClaim(ClaimTypes.Email),
-			Avatar = getClaim(ClaimTypes.UserData),
-			Provider = getClaim(ClaimTypes.PrimarySid),
-			ProviderId = getClaim(ClaimTypes.PrimaryGroupSid)
-		};
+		if (string.IsNullOrEmpty(strId) ||
+			!long.TryParse(strId, out var id)) return null;
+
+		return id;
 	}
 }

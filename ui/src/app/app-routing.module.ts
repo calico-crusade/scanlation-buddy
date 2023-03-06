@@ -17,8 +17,13 @@ const routes: Routes = [
     }, { 
         path: 'projects', 
         loadChildren: () => import('./routes/projects/projects.module').then(m => m.ProjectsModule) 
-    },
-    { path: 'account', loadChildren: () => import('./routes/account/account.module').then(m => m.AccountModule) }, {
+    }, { 
+        path: 'account', 
+        loadChildren: () => import('./routes/account/account.module').then(m => m.AccountModule) 
+    }, { 
+        path: 'settings', 
+        loadChildren: () => import('./routes/settings/settings.module').then(m => m.SettingsModule) 
+    }, {
         path: '**',
         redirectTo: '/error?error=Page not found'
     }

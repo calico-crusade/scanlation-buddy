@@ -1,7 +1,7 @@
 $menu-width: 300px;
 
 .content {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100vw;
@@ -31,9 +31,7 @@ $menu-width: 300px;
                 font-size: 1.25rem;
             }
 
-            button {
-                margin: auto 5px;
-            }
+            button { margin: auto 5px; }
         }
 
         .nav-item,
@@ -44,25 +42,16 @@ $menu-width: 300px;
             margin: 0;
             font-size: 1rem;
 
-            span {
-                margin: auto 5px;
-            }
-
-            p {
-                margin: auto 0;
-            }
+            span { margin: auto 5px; }
+            p { margin: auto 0; }
         }
 
         .nav-item {
+            margin-top: 3px;
             padding-left: 15px;
 
-            &:hover {
-                background-color: var(--background);
-            }
-
-            &.active {
-                background-color: var(--primary);
-            }
+            &:hover { background-color: var(--background); }
+            &.active { background-color: var(--primary); }
         }
 
         .nav-title {
@@ -77,9 +66,7 @@ $menu-width: 300px;
             a {
                 margin: auto;
                 color: var(--text-color);
-                img {
-                    height: 24px;
-                }
+                img { height: 24px; }
             }
         }
 
@@ -87,35 +74,58 @@ $menu-width: 300px;
             font-size: 10px;
             text-align: center;
 
-            a {
-                text-decoration: underline;
-            }
+            a { text-decoration: underline; }
         }
     }
 
-    main {
+    .body {
         position: relative;
         flex: 1;
         overflow: hidden;
-    }
+        display: flex;
+        flex-flow: column;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 1440px;
+        padding: 0 10px;
 
-    .float-icon {
-        position: absolute;
-        top: 10px;
-        left: 0;
-        margin-left: -100%;
-        background-color: transparent;
+        header {
+            display: flex;
+            flex-flow: row;
+            padding: 10px;
+
+            .menu-icon {
+                opacity: 0;
+                transition: opacity 150ms ease-in-out 0s;
+            }
+
+            .bump { flex: 1; }
+
+            a {
+                margin: auto 5px;
+                img {
+                    display: block;
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                }
+
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+        }
+
+        main {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
     }
 
     &.drawer-closed {
-        aside {
-            margin-left: -#{$menu-width + 30px};
-        }
-
-        
-        .float-icon {
-            margin-left: 10px;
-        }
+        aside { margin-left: -#{$menu-width + 20px}; }
+        .body header .menu-icon { opacity: 1; }
     }
 
     .center {
@@ -125,9 +135,6 @@ $menu-width: 300px;
         background-color: var(--pri-accent);
 
         .text-center { margin: 0; }
-
-        button {
-            margin: 0 auto;
-        }
+        button { margin: 0 auto; }
     }
 }

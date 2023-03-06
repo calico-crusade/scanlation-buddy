@@ -11,9 +11,6 @@ public class BuddyUser : DbObject
 	[JsonPropertyName("platformId")]
 	public string PlatformId { get; set; } = string.Empty;
 
-	[JsonPropertyName("roles")]
-	public string Roles { get; set; } = string.Empty;
-
 	[JsonIgnore]
 	public string Email { get; set; } = string.Empty;
 

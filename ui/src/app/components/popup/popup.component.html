@@ -1,0 +1,16 @@
+<div class="background" [ngClass]="{ 'show': show }">
+    <div class="fade" (click)="cancel(true)"></div>
+    <div class="modal" [class]="size" [style.border-top-color]="color">
+        <header>
+            <div class="title">
+                {{ title }}
+            </div>
+            <button class="close" (click)="cancel(true)" *ngIf="!removeClose">
+                <box-icon>close</box-icon>
+            </button>
+        </header>
+        <main *ngIf="show">
+            <ng-content></ng-content>
+        </main>
+    </div>
+</div>

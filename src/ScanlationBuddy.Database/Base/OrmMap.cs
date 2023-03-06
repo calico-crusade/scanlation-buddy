@@ -54,13 +54,8 @@ public abstract class OrmMapExtended<T> : OrmMap<T>
 		return _sql.Fetch<T>(_fetchQuery, new { id });
 	}
 
-	public virtual Task<long> Insert(T obj)
-	{
-		_insertReturnQuery ??= _query.InsertReturn<T, long>(TableName, t => t.Id);
-		return _sql.ExecuteScalar<long>(_insertReturnQuery, obj);
-	}
 
-	public virtual Task InsertNoReturn(T obj)
+	public virtual Task Insert(T obj)
 	{
 		_insertQuery ??= _query.Insert<T>(TableName);
 		return _sql.Execute(_insertQuery, obj);
@@ -90,7 +85,7 @@ public abstract class OrmMapExtended<T> : OrmMap<T>
 
 	public virtual Task<PaginatedResult<T>> Paginate(int page = 1, int size = 100)
 	{
-		_paginateQuery ??= _query.Pagniate<T, long>(TableName, (c) => { }, t => t.Id);
+		_paginateQuery ??= _query.Pagniate<T, DateTime?>(TableName, (c) => { }, t => t.UpdatedAt);
 		return Paginate(_paginateQuery, null, page, size);
 	}
 

@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { AuthService } from 'src/app/services/auth.service';
+import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'app-chat-popup',
@@ -7,7 +6,7 @@ import { AuthService } from 'src/app/services/auth.service';
     styleUrls: ['./chat-popup.component.scss']
 })
 export class ChatPopupComponent {
-    showPopup: boolean = false;
+    @Input('show') showPopup: boolean = false;
 
     tabs: { title: string; icon: string; }[] = [
         { title: 'alerts', icon: 'notifications_active' },

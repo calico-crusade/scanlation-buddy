@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../services';
 
 @Component({
     selector: 'app-root',
@@ -8,8 +8,8 @@ import { AuthService } from '../services/auth.service';
 })
 export class AppComponent implements OnInit {
 
-    state$ = this.auth.onState;
-    user$ = this.auth.onUser;
+    state$ = this.auth.state$;
+    user$ = this.auth.user$;
 
     drawerOpen: boolean = true;
 

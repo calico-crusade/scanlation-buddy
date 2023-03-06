@@ -1,0 +1,49 @@
+<box-container [loading]="!(roles$ | async)" [handle-scroll]="true" flex-flow="column">
+    <div class="colmatic">
+        <main class="scroll-list" *ngIf="roles$ | async as roles">
+            <header>
+                <h2>Roles</h2>
+                <button (click)="newRole()">
+                    <box-icon>add</box-icon>
+                </button>
+            </header>
+            <div class="role" *ngFor="let role of roles">
+                <div class="title">
+                    <span [style.color]="role.color">{{ role.name }}</span>
+                    <button (click)="selectRole(role)">
+                        <box-icon>edit</box-icon>
+                    </button>
+                    <button>
+                        <box-icon>delete</box-icon>
+                    </button>
+                </div>
+                <div class="desc marked-container" [markdown]="role.description"></div>
+                <div class="desc">
+                    <label>Permissions: </label>
+                    <span class="tag" *ngFor="let perm of role.permissions">{{ perm }}</span>
+                </div>
+            </div>
+        </main>
+        <aside *ngIf="perms$ | async as perms">
+            <h2>Permissions Key</h2>
+            <div class="perm" *ngFor="let perm of perms">
+                <div class="title"><b>{{ perm.name }}</b></div>
+                <div class="desc marked-container" [markdown]="perm.description"></div>
+            </div>
+        </aside>
+    </div>
+</box-container>
+
+<app-popup #editrole [title]="'Role: ' + role?.name">
+    <main *ngIf="role">
+        <label>Name</label>
+        <input [(ngModel)]="role.name" />
+
+        <label>Description</label>
+        <textarea [(ngModel)]="role.description"></textarea>
+
+        <button (click)="save()">
+            <box-icon>save</box-icon>
+        </button>
+    </main>
+</app-popup>

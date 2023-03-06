@@ -2,9 +2,12 @@
 :root {
     --background: #121318;
     --pri-accent: #212328;
-    --primary: #ff6740;
+    --primary: #726ae4;
     --text-color: #dedede;
+    --text-color-muted: rgb(134, 133, 133);
     --font-family: Poppins, sans-serif;
+    --brd-color-accent: rgba(255, 255, 255, 0.12);
+    --aside-width: 300px;
 }
 
 
@@ -32,7 +35,7 @@ html, body {
 
 a, button {
     color: var(--text-color);
-    background-color: var(--pri-accent);
+    background-color: transparent;
     font-family: var(--font-family);
     outline: none;
     border: none;
@@ -63,6 +66,11 @@ a, button {
         flex-flow: row;
     }
 
+    &.fill-parent {
+        width: 100%;
+        height: 100%;
+    }
+
     &.row {
         flex-flow: column;
 
@@ -90,6 +98,65 @@ a, button {
     }
 }
 
-input {
+.table-fill {
+    flex: 1;
+    overflow: auto;
+    position: relative;
 
+    table {
+        min-width: 100%;
+        border-collapse: collapse;
+
+        th, td {
+            border-bottom: 1px solid var(--brd-color-accent);
+            padding-top: 5px;
+            text-align: center;
+        }
+
+        th {
+            padding: 10px 5px;
+            position: sticky;
+            top: 0;
+            background-color: var(--pri-accent);
+        }
+
+
+        img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+        }
+
+        a {
+            text-decoration: none;
+            cursor: pointer;
+        }
+    }
+}
+
+.colmatic {
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    overflow: hidden;
+
+    aside {
+        width: var(--aside-width);
+        overflow-x: hidden;
+        overflow-y: auto;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: var(--pri-accent);
+        margin: 5px;
+    }
+
+    main {
+        flex: 1;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+}
+
+.marked-container {
+    p, h1, h2, h3, h4, h5, h6 { margin: 0; }
 }
