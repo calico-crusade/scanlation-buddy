@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CardboardBox.Database" Version="1.0.6" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.117" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="./../global.cs"></Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\ScanlationBuddy\ScanlationBuddy.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Scripts\00-00-read-me.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Scripts\0T-01-create-buddy-user.sql">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+</Project>

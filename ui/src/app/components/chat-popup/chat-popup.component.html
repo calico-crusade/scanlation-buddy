@@ -1,0 +1,31 @@
+<div class="chat-container" [ngClass]="{ 'open': showPopup }">
+    <header>
+        <h2>Chat</h2>
+        <a routerLink="/chat" routerLinkActive="active">
+            <box-icon>ungroup</box-icon>
+        </a>
+        <button (click)="showPopup = !showPopup">
+            <box-icon>close</box-icon>
+        </button>
+    </header>
+    <main>
+        <article class="alerts" [ngClass]="{ 'active': tab === 0 }">
+            <h1>Alerts</h1>
+        </article>
+        <article class="users" [ngClass]="{ 'active': tab === 1 }">
+            <h1>Users</h1>
+        </article>
+        <article class="settings" [ngClass]="{ 'active': tab === 2 }">
+            <h1>Settings</h1>
+        </article>
+    </main>
+    <footer>
+        <button *ngFor="let tabData of tabs; let i = index" (click)="tab = i" [ngClass]="{ 'active': tab === i }">
+            <box-icon>{{ tabData.icon }}</box-icon>
+        </button>
+    </footer>
+</div>
+
+<button class="float-icon" [ngClass]="{ 'open': showPopup }" (click)="showPopup = !showPopup">
+    <box-icon>notifications_active</box-icon>
+</button>

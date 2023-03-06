@@ -1,0 +1,140 @@
+<ng-container *ngIf="state$ | async as state" [ngSwitch]="state">
+    <div class="content" [ngClass]="{ 'drawer-closed': !drawerOpen }" *ngSwitchCase="2">
+        <aside *ngIf="user$ | async as user">
+            <div class="title">
+                <a routerLink="/">ScanlationBuddy</a>
+                <button (click)="drawerOpen = !drawerOpen">
+                    <box-icon>close</box-icon>
+                </button>
+            </div>
+    
+            <h2 class="nav-title">
+                <span><box-icon>menu_book</box-icon></span>
+                <p>Manga</p>
+            </h2>
+            <a class="nav-item" routerLink="/projects/list" routerLinkActive="active">
+                <span><box-icon>resume</box-icon></span>
+                <p>Projects</p>
+            </a>
+            <a class="nav-item" routerLink="/projects/new" routerLinkActive="active">
+                <span><box-icon>add</box-icon></span>
+                <p>New</p>
+            </a>
+            <a class="nav-item" routerLink="/projects/import" routerLinkActive="active">
+                <span><box-icon>download</box-icon></span>
+                <p>Import</p>
+            </a>
+            <a class="nav-item" routerLink="/projects/schedule" routerLinkActive="active">
+                <span><box-icon>calendar_month</box-icon></span>
+                <p>Release Schedule</p>
+            </a>
+    
+            <h2 class="nav-title">
+                <span><box-icon>group</box-icon></span>
+                <p>Users</p>
+            </h2>
+            <a class="nav-item" routerLink="/users/new" routerLinkActive="active">
+                <span><box-icon>add</box-icon></span>
+                <p>Invite</p>
+            </a>
+            <a class="nav-item" routerLink="/users/list" routerLinkActive="active">
+                <span><box-icon>receipt_long</box-icon></span>
+                <p>List</p>
+            </a>
+            <a class="nav-item" routerLink="/users/manga" routerLinkActive="active">
+                <span><box-icon>add_moderator</box-icon></span>
+                <p>Manage</p>
+            </a>
+    
+            <h2 class="nav-title">
+                <span><box-icon>account_circle</box-icon></span>
+                <p>My Account</p>
+            </h2>
+            <a class="nav-item" routerLink="/account" routerLinkActive="active">
+                <span><box-icon>edit</box-icon></span>
+                <p>{{ user.nickname }}</p>
+            </a>
+            <a class="nav-item" (click)="logout()">
+                <span><box-icon>logout</box-icon></span>
+                <p>Sign Out</p>
+            </a>
+    
+            <h2 class="nav-title">
+                <span><box-icon>settings</box-icon></span>
+                <p>Settings</p>
+            </h2>
+            <a class="nav-item" routerLink="/settings/general" routerLinkActive="active">
+                <span><box-icon>tune</box-icon></span>
+                <p>General</p>
+            </a>
+            <a class="nav-item" routerLink="/settings/roles" routerLinkActive="active">
+                <span><box-icon>admin_panel_settings</box-icon></span>
+                <p>Roles</p>
+            </a>
+            <a class="nav-item" routerLink="/settings/inserts" routerLinkActive="active">
+                <span><box-icon>auto_stories</box-icon></span>
+                <p>Page Inserts</p>
+            </a>
+            <a class="nav-item" routerLink="/settings/logins" routerLinkActive="active">
+                <span><box-icon>password</box-icon></span>
+                <p>MD Logins</p>
+            </a>
+    
+            <div class="external">
+                <a href="https://discord.gg/RV9MvvYXsp" target="_blank">
+                    <img src="/assets/discord-icon.png" alt="Discord Logo" />
+                </a>
+                <a href="https://cba.index-0.com" target="_blank">
+                    <img src="/assets/logo.png" alt="Main Site Logo" />
+                </a>
+                <a href="https://github.com/calico-crusade/scanlation-buddy" target="_blank">
+                    <svg height="24" width="24" aria-hidden="true" viewBox="0 0 16 16" version="1.1" data-view-component="true" class="octicon octicon-mark-github v-align-middle">
+                        <path fill="var(--text-color)" fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+                    </svg>
+                </a>
+            </div>
+            <p class="note">
+                Website not affilated with or endorsed by <a href="https://mangadex.org" target="_blank">MangaDex</a>.
+            </p>
+        </aside>
+        <main>
+            <router-outlet></router-outlet>
+        </main>
+    
+        <button class="float-icon" (click)="drawerOpen = !drawerOpen">
+            <box-icon>menu</box-icon>
+        </button>
+    
+        <app-chat-popup></app-chat-popup>
+    </div>
+    
+    <div class="content" *ngSwitchCase="1">
+        <main>
+            <box-container [loading]="true" loading-text="Logging you in... Please wait while the hamster runs!"></box-container>
+        </main>
+    </div>
+
+
+    <div class="content flex" *ngSwitchCase="4">
+        <div class="center flex row">
+            <h1 class="text-center">You cannot access this!</h1>
+            <p class="text-center">You don't have the right permissions to access this.</p>
+            <p class="text-center">You might need to talk to your site administrator about getting permissions!</p>
+            
+            <button class="icon-btn" (click)="logout()">
+                <span><box-icon>logout</box-icon></span>
+                <p>Logout</p>
+            </button>
+        </div>
+    </div>
+
+    <div class="content flex" *ngSwitchDefault>
+        <div class="center">
+            <button class="icon-btn" (click)="login()">
+                <span><box-icon>login</box-icon></span>
+                <p>Login</p>
+            </button>
+        </div>
+    </div>
+</ng-container>
+

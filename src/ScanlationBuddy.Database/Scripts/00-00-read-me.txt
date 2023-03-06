@@ -1,0 +1,34 @@
+﻿This directory houses scripts used to create / migrate the SQLite database.
+These are run each time the application performs the first SQL action.
+
+The reason for the prefixes is that all of the scripts are run in alphabetical order, 
+so if one script relies on another script being run before it 
+(example: Needing a table created before creating an FK constraint)
+then that ording is handled via the run order.
+
+Each file should only house 1 script at a time.
+
+This is also used to migrate between different versions of the application,
+so keep that in mind when writing scripts. You should be able to "replay"
+the scripts at any time and it should NOT break the database.
+
+
+Honestly, I should use a proper ORM for this, but EF is absolutely awful and
+I don't feel like writing one from scratch. This is copied out of another project
+that works pretty well, so it's decently robost and gets the job done.
+
+
+The idea behind the file name prefixes is this:
+
+<Order><Type>-<Order>-<Name>.sql
+
+The first <Order> is the order in which the groups of scripts should be run.
+The <Type> is the type of script (See below for mapping).
+The second <Order> is the order in which the scripts within a group should be run.
+The <Name> is an arbitary name so you know what the script does.
+
+Type list:
+
+0T = Table Create Scripts
+
+9M = Data Migration Scripts

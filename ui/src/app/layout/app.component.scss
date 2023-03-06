@@ -1,0 +1,133 @@
+$menu-width: 300px;
+
+.content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+
+    aside {
+        background-color: var(--pri-accent);
+        transition: margin-left 150ms ease-in-out 0s;
+        box-shadow: inset -25px 0 9px -25px #0000001a;
+        max-width: $menu-width;
+        min-width: $menu-width;
+        padding: 10px;
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        display: flex;
+        flex-flow: column;
+
+        .title {
+            display: flex;
+            flex-flow: row;
+
+            a {
+                flex: 1;
+                font-size: 1.25rem;
+            }
+
+            button {
+                margin: auto 5px;
+            }
+        }
+
+        .nav-item,
+        .nav-title {
+            display: flex;
+            flex-flow: row;
+            border-radius: 5px;
+            margin: 0;
+            font-size: 1rem;
+
+            span {
+                margin: auto 5px;
+            }
+
+            p {
+                margin: auto 0;
+            }
+        }
+
+        .nav-item {
+            padding-left: 15px;
+
+            &:hover {
+                background-color: var(--background);
+            }
+
+            &.active {
+                background-color: var(--primary);
+            }
+        }
+
+        .nav-title {
+            margin-top: 10px;
+        }
+
+        .external {
+            margin-top: auto;
+            display: flex;
+            flex-flow: row;
+
+            a {
+                margin: auto;
+                color: var(--text-color);
+                img {
+                    height: 24px;
+                }
+            }
+        }
+
+        .note {
+            font-size: 10px;
+            text-align: center;
+
+            a {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    main {
+        position: relative;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .float-icon {
+        position: absolute;
+        top: 10px;
+        left: 0;
+        margin-left: -100%;
+        background-color: transparent;
+    }
+
+    &.drawer-closed {
+        aside {
+            margin-left: -#{$menu-width + 30px};
+        }
+
+        
+        .float-icon {
+            margin-left: 10px;
+        }
+    }
+
+    .center {
+        display: flex;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: var(--pri-accent);
+
+        .text-center { margin: 0; }
+
+        button {
+            margin: 0 auto;
+        }
+    }
+}
