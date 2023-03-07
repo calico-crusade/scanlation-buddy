@@ -150,6 +150,10 @@ a, button {
     display: flex;
     flex-flow: row;
     overflow: hidden;
+    
+    h2, p {
+        margin: 0;
+    }
 
     aside {
         width: var(--aside-width);
@@ -165,6 +169,26 @@ a, button {
         flex: 1;
         overflow-x: hidden;
         overflow-y: auto;
+        display: flex;
+        flex-flow: column;
+        position: relative;
+
+        header {
+            display: flex;
+            flex-flow: row;
+            width: 100%;
+            position: sticky;
+            top: 0;
+            background-color: var(--background);
+            z-index: 1;
+            margin-bottom: .5rem;
+
+            h2 { flex: 1; }
+            a { 
+                margin: auto 5px;
+                background-color: var(--background); 
+            }
+        }
     }
 }
 
@@ -255,5 +279,42 @@ $checkbox-size: 15px;
 
     input:checked ~ .checkmark:after {
         display: block;
+    }
+}
+
+.delete-confirm {
+    .center {
+        footer {
+            display: flex;
+            flex-flow: row;
+
+            button {
+                margin: 5px auto;
+            }
+        }
+    }
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .5rem;
+
+    &.by-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    &.by-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+.popup-content {
+    display: flex;
+    flex-flow: column;
+    min-height: 100%;
+
+    footer {
+        margin-top: auto;
+        display: flex;
+
+        :first-child {
+            margin-left: auto;
+        }
     }
 }

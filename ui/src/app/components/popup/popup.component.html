@@ -9,8 +9,23 @@
                 <box-icon>close</box-icon>
             </button>
         </header>
-        <main *ngIf="show">
+        <main *ngIf="show && !loading">
             <ng-content></ng-content>
+        </main>
+        <main *ngIf="loading">
+            <magic-circle spin-speed="20s" width="300px" height="300px">
+                <mc-ring text="Some fancy stuff is happening... Sit tight...">
+                    <mc-square [total]="3" [index]="0"></mc-square>
+                    <mc-square [total]="3" [index]="1"></mc-square>
+                    <mc-square [total]="3" [index]="2">
+                        <mc-ring text="Loading... Loading... Loading...">
+                            <mc-square [total]="3" [index]="0"></mc-square>
+                            <mc-square [total]="3" [index]="1"></mc-square>
+                            <mc-square [total]="3" [index]="2"></mc-square>
+                        </mc-ring>
+                    </mc-square>
+                </mc-ring>
+            </magic-circle>
         </main>
     </div>
 </div>

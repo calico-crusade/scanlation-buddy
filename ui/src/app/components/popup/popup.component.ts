@@ -13,6 +13,7 @@ export class PopupComponent {
     @Input('size') size: ('big' | 'normal' | 'medium') = 'normal';
     @Input('color') color: string = 'var(--color-vrv)';
     @Input('remove-close') removeClose: boolean = false;
+    @Input() loading: boolean = false;
 
     @Output() canceled: EventEmitter<void> = new EventEmitter();
     @Output() confirmed: EventEmitter<void> = new EventEmitter();

@@ -32,3 +32,8 @@ export interface BuddyPermission {
     name: string;
     description: string;
 }
+
+export interface BuddyUserRoles {
+    user: BuddyUser;
+    roles: BuddyRole[];
+}

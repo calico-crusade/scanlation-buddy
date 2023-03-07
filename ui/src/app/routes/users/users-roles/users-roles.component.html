@@ -3,14 +3,14 @@
         <main class="scroll-list" *ngIf="roles$ | async as roles">
             <header>
                 <h2>Roles</h2>
-                <button (click)="newRole()"  *ngIf="hasPerm('Admin - Edit Roles')">
+                <button (click)="newRole()" *ngIf="hasAdminEditRoles">
                     <box-icon>add</box-icon>
                 </button>
             </header>
             <div class="role" *ngFor="let role of roles">
                 <div class="title">
                     <span [style.color]="role.color">{{ role.name }}</span>
-                    <ng-container *ngIf="hasPerm('Admin - Edit Roles')">
+                    <ng-container *ngIf="hasAdminEditRoles">
                         <button (click)="selectRole(role)">
                             <box-icon>edit</box-icon>
                         </button>
@@ -36,8 +36,8 @@
     </div>
 </box-container>
 
-<app-popup #editrole [title]="'Role: ' + role?.name">
-    <main class="popup-edit-role" *ngIf="role && !roleLoading; else roleloading">
+<app-popup #editrole [title]="'Role: ' + role?.name" [loading]="roleLoading">
+    <main class="popup-content" *ngIf="role">
         <div class="form-control">
             <label>Name</label>
             <input [(ngModel)]="role.name" placeholder="Role Name" />
@@ -53,8 +53,8 @@
             <input type="color" [(ngModel)]="role.color" />
         </div>
 
-        <div class="perms-grid">
-            <label class="title">Permissions:</label>
+        <label class="title">Permissions:</label>
+        <div class="grid">
             <label class="checkbox" *ngFor="let perm of perms$ | async">
                 {{ perm.name }}
                 <input type="checkbox" 
@@ -71,25 +71,10 @@
             </button>
         </footer>
     </main>
-    <ng-template #roleloading>
-        <magic-circle spin-speed="20s" width="300px" height="300px">
-            <mc-ring text="Some fancy stuff is happening... Sit tight...">
-                <mc-square [total]="3" [index]="0"></mc-square>
-                <mc-square [total]="3" [index]="1"></mc-square>
-                <mc-square [total]="3" [index]="2">
-                    <mc-ring text="Loading... Loading... Loading...">
-                        <mc-square [total]="3" [index]="0"></mc-square>
-                        <mc-square [total]="3" [index]="1"></mc-square>
-                        <mc-square [total]="3" [index]="2"></mc-square>
-                    </mc-ring>
-                </mc-square>
-            </mc-ring>
-        </magic-circle>
-    </ng-template>
 </app-popup>
 
-<app-popup #deleteconfirm title="Are you sure?">
-    <main class="flex fill-parent delete-confirm" *ngIf="role && !roleLoading; else roleloading2">
+<app-popup #deleteconfirm title="Are you sure?" [loading]="roleLoading">
+    <main class="flex fill-parent delete-confirm" *ngIf="role">
         <div class="center">
             <h2>Are you sure you want to delete {{ role.name }}? </h2>
             <footer>
@@ -104,19 +89,4 @@
             </footer>
         </div>
     </main>
-    <ng-template #roleloading2>
-        <magic-circle spin-speed="20s" width="300px" height="300px">
-            <mc-ring text="Some fancy stuff is happening... Sit tight...">
-                <mc-square [total]="3" [index]="0"></mc-square>
-                <mc-square [total]="3" [index]="1"></mc-square>
-                <mc-square [total]="3" [index]="2">
-                    <mc-ring text="Loading... Loading... Loading...">
-                        <mc-square [total]="3" [index]="0"></mc-square>
-                        <mc-square [total]="3" [index]="1"></mc-square>
-                        <mc-square [total]="3" [index]="2"></mc-square>
-                    </mc-ring>
-                </mc-square>
-            </mc-ring>
-        </magic-circle>
-    </ng-template>
 </app-popup>

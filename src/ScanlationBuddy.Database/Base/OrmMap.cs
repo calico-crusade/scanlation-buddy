@@ -37,7 +37,6 @@ public abstract class OrmMapExtended<T> : OrmMap<T>
 	where T : DbObject
 {
 	private string? _fetchQuery;
-	private string? _insertReturnQuery;
 	private string? _insertQuery;
 	private string? _updateQuery;
 	private string? _paginateQuery;

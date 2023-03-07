@@ -20,3 +20,10 @@ public class BuddyUser : DbObject
 	[JsonPropertyName("providerId")]
 	public string ProviderId { get; set; } = string.Empty;
 }
+
+public class BuddyUserRoles
+{
+	public BuddyUser User { get; set; } = new();
+
+	public List<BuddyRole> Roles { get; set; } = new();
+}

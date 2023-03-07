@@ -1,0 +1,112 @@
+<box-container [loading]="!(users$ | async)" [handle-scroll]="true" flex-flow="column">
+    <div class="colmatic" *ngIf="users$ | async as users">
+        <main>
+            <header>
+                <h2>Users</h2>
+                <div class="form-control">
+                    <input [(ngModel)]="username" placeholder="Search Usernames" />
+                </div>
+
+                <div class="form-control">
+                    <select [(ngModel)]="roleId">
+                        <option [value]="-1" selected style="color: var(--text-color-muted)">Roles</option>
+                        <option *ngFor="let role of roles$ | async" [value]="role.id" [style.color]="role.color">
+                            {{ role.name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="form-control">
+                    <select [(ngModel)]="provider">
+                        <option value="" selected style="color: var(--text-color-muted)">Providers</option>
+                        <option *ngFor="let prov of providers$ | async" [value]="prov">
+                            {{ prov }}
+                        </option>
+                    </select>
+                </div>
+                <button class="search-btn" (click)="search()">
+                    <box-icon>search</box-icon>
+                </button>
+            </header>
+            <div class="grid">
+                <div class="user" *ngFor="let user of users.results">
+                    <img class="avatar" [src]="user.user.avatar" />
+                    <div class="data">
+                        <div class="title">
+                            <p>{{ user.user.username }}</p>
+                        </div>
+                        <div class="provider" [ngSwitch]="user.user.provider.toLowerCase()">
+                            <span>Login Provider:&nbsp;</span>
+                            <a *ngSwitchCase="'discord'" [href]="'https://discord.com/users/' + user.user.providerId" target="_blank">
+                                <img src="/assets/discord-icon.png" />
+                            </a>
+                            <a *ngSwitchCase="'twitch'" [href]="'https://twitch.tv/' + user.user.username" target="_blank">
+                                <img src="/assets/twitch-icon.png" />
+                            </a>
+                            <a *ngSwitchCase="'reddit'" [href]="'https://www.reddit.com/user/' + user.user.username" target="_blank">
+                                <img src="/assets/reddit-icon.png" />
+                            </a>
+                            <span *ngSwitchDefault>
+                                {{ user.user.provider }} - {{ user.user.providerId }}
+                            </span>
+                        </div>
+                        <div class="roles">
+                            <span>Roles:</span>
+                            <span *ngFor="let role of user.roles" [style.color]="role.color">{{ role.name }}</span>
+                        </div>
+                    </div>
+                    <div class="buttons" *ngIf="hasAdminGrantRoles">
+                        <button (click)="deleteUser(user)">
+                            <box-icon>delete</box-icon>
+                        </button>
+                        <button *ngIf="hasAdminGrantRoles" (click)="editUser(user)">
+                            <box-icon>edit</box-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <footer>
+
+            </footer>
+        </main>
+    </div>
+</box-container>
+
+<app-popup #edituser [title]="'Assign Roles for ' + user?.user?.username" [loading]="userLoading">
+    <main class="popup-content" *ngIf="user">
+        <label>Roles:</label>
+        <div class="grid by-3">
+            <label class="checkbox" *ngFor="let role of roles$ | async" [style.color]="role.color">
+                {{ role.name }}
+                <input type="checkbox"
+                    [ngModel]="hasRole(user, role)"
+                    (change)="toggleRole(user, role)" />
+                <span class="checkmark"></span>
+            </label>
+        </div>
+
+        <footer>
+            <button class="icon-btn primary" (click)="save()">
+                <span><box-icon>save</box-icon></span>
+                <p>Save</p>
+            </button>
+        </footer>
+    </main>
+</app-popup>
+
+<app-popup #deleteuser title="Are you sure?" [loading]="userLoading">
+    <main class="flex fill-parent delete-confirm" *ngIf="user">
+        <div class="center">
+            <h2>Are you sure you want to delete {{ user.user.username }}? </h2>
+            <footer>
+                <button class="icon-btn primary" (click)="cancelDelete()">
+                    <span><box-icon>cancel</box-icon></span>
+                    <p>Cancel</p>
+                </button>
+                <button class="icon-btn warning" (click)="commitDelete()">
+                    <span><box-icon>delete</box-icon></span>
+                    <p>Yes, I'm sure</p>
+                </button>
+            </footer>
+        </div>
+    </main>
+</app-popup>

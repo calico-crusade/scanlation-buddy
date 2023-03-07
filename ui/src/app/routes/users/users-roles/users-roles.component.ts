@@ -1,14 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
-import { PopupInstance, PopupService } from 'src/app/components';
-import { PopupComponent } from 'src/app/components/popup/popup.component';
+import { PopupInstance, PopupService, PopupComponent, PermCheck } from 'src/app/components';
+import {  } from 'src/app/components/popup/popup.component';
 import { AuthService, BuddyRole, RolesService } from 'src/app/services';
 
 @Component({
-    templateUrl: './settings-roles.component.html',
-    styleUrls: ['./settings-roles.component.scss']
+    templateUrl: './users-roles.component.html',
+    styleUrls: ['./users-roles.component.scss']
 })
-export class SettingsRolesComponent {
-
+export class UsersRolesComponent extends PermCheck {
     private _editInst?: PopupInstance;
 
     roles$ = this._roles.roles$;
@@ -26,7 +25,7 @@ export class SettingsRolesComponent {
         private _roles: RolesService,
         private _popup: PopupService,
         private _auth: AuthService
-    ) { }
+    ) { super(_auth); }
 
     selectRole(role: BuddyRole) {
         this.role = JSON.parse(JSON.stringify(role));
@@ -94,6 +93,4 @@ export class SettingsRolesComponent {
                 this.roleLoading = false;
             })
     }
-
-    hasPerm(perm: string) { return this._auth.hasPerm(perm); }
 }

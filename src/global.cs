@@ -5,6 +5,8 @@ global using CardboardBox.Database;
 global using CardboardBox.Http;
 global using CardboardBox.Json;
 
+global using Dapper;
+
 global using MangaDexSharp;
 
 global using Microsoft.Extensions.Configuration;

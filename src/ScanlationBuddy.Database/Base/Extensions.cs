@@ -1,6 +1,4 @@
-﻿using Dapper;
-
-namespace ScanlationBuddy.Database;
+﻿namespace ScanlationBuddy.Database;
 
 using Base;
 using Mappings;
@@ -14,6 +12,7 @@ public static class Extensions
             c.ForEntity<BuddyUser>()
              .ForEntity<BuddyProject>()
              .ForEntity<BuddyRole>()
+             .ForEntity<BuddyRoleUser>()
              .ForEntity<BuddyUserRole>();
         });
 

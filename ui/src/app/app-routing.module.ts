@@ -23,7 +23,8 @@ const routes: Routes = [
     }, { 
         path: 'settings', 
         loadChildren: () => import('./routes/settings/settings.module').then(m => m.SettingsModule) 
-    }, {
+    },
+    { path: 'users', loadChildren: () => import('./routes/users/users.module').then(m => m.UsersModule) }, {
         path: '**',
         redirectTo: '/error?error=Page not found'
     }

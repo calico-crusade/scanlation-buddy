@@ -1,0 +1,76 @@
+header {
+    max-height: 40px;
+}
+
+.user {
+    display: flex;
+    flex-flow: row;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: var(--pri-accent);
+    overflow: hidden;
+
+    .avatar {
+        width: 65px;
+        height: 65px;
+        margin: auto 5px;
+        border-radius: 50%;
+    }
+
+    .data {
+        display: flex;
+        flex-flow: column;
+        flex: 1;
+        overflow: hidden;
+
+        .title {
+            display: flex;
+            flex-flow: row;
+
+            p { flex: 1; margin: auto 0; }
+            button { margin: auto 5px; }
+        }
+
+        .provider {
+            display: flex;
+            flex-flow: row;
+
+            span {
+                margin: auto 0;
+            }
+            a {
+                margin: auto 0;
+                display: flex;
+                img {
+                    height: 20px;
+                    margin: auto 0;
+                }
+            }
+        }
+
+        .roles {
+            display: flex;
+            flex-flow: row;
+            max-width: 100%;
+            overflow-x: hidden;
+
+            span {
+                margin-right: 5px;
+                white-space: pre;
+            }
+        }
+    }
+
+    .buttons {
+        display: flex;
+        flex-flow: column;
+
+        button {
+            margin: auto 5px;
+        }
+    }
+}
+
+.search-btn {
+    margin: auto 10px;
+}

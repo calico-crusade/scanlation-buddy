@@ -116,7 +116,7 @@ export class AuthService {
     async handleCode(code: string): Promise<LoginResponse> {
         let auth = await this.resolve(code).promise;
         if (!auth || auth.error || !auth.token) {
-            this.config.token = null;
+            this.config.token = undefined;
             return auth || { error: 'Error occurred while logging in' };
         }
         
@@ -125,7 +125,7 @@ export class AuthService {
     }
 
     logout() {
-        this.config.token = null;
+        this.config.token = undefined;
         this._userSub.next(undefined);
         this._stateSub.next(LoginState.NotLoggedIn);
     }

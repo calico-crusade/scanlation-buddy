@@ -20,3 +20,9 @@ public class BuddyRole : DbObject
 	[JsonPropertyName("color")]
 	public string Color { get; set; } = "#fff";
 }
+
+public class BuddyRoleUser : BuddyRole
+{
+	[JsonPropertyName("userId")]
+	public long UserId { get; set; }
+}

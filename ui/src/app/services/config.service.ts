@@ -1,16 +1,22 @@
 import { Injectable } from "@angular/core";
-import { LocalStorageVar } from "@cardboard-box/ngx-box";
 import { environment } from "src/environments/environment";
+
+const TOKEN_KEY = 'sb-auth-token';
 
 @Injectable({ providedIn: 'root' })
 export class ConfigService {
-    private _token = new LocalStorageVar<string | undefined | null>('', 'sb-auth-token');
-    
     get apiUrl() { return environment.apiUrl; }
     get isProd() { return environment.production; }
 
-    get token() { return this._token.value; }
-    set token(value: string | undefined | null) { this._token.value = value; }
+    get token() { 
+        const data = localStorage.getItem(TOKEN_KEY); 
+        if (!data) return undefined;
+        return data;
+    }
+    set token(value: string | undefined) { 
+        if (!value) localStorage.removeItem(TOKEN_KEY);
+        else localStorage.setItem(TOKEN_KEY, value);
+    }
 
     get SkipAuthUrls(): string[] { return []; }
 

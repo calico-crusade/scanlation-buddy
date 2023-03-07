@@ -1,6 +1,6 @@
 ﻿namespace ScanlationBuddy.Web.Controllers;
 
-[ApiController]
+[ApiController, Authorize(Roles = PERM_ACCESS_SITE)]
 public class RolesController : ControllerBase
 {
 	private readonly IDbService _db;

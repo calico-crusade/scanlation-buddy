@@ -1,0 +1,44 @@
+
+
+.marked-container {
+    color: var(--text-color-muted);
+}
+
+.colmatic {
+    main {
+        .role {
+            display: flex;
+            flex-flow: column;
+            margin-bottom: 10px;
+            margin-right: 5px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: var(--pri-accent);
+
+            .title {
+                display: flex;
+                flex-flow: row;
+
+                span { flex: 1; margin: auto 0; }
+                a { margin: auto 5px; }
+            }
+
+            .desc {
+                display: flex;
+                flex-flow: row wrap;
+                label {
+                    margin-top: 5px;
+                }
+
+                .tag {
+                    margin-top: 5px;
+                    margin-left: 5px;
+                    padding: 0 5px;
+                    background-color: var(--primary);
+                    border-radius: 5px;
+                    white-space: pre;
+                }
+            }
+        }
+    }
+}
