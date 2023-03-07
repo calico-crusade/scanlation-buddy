@@ -21,7 +21,6 @@ export class UsersListComponent extends PermCheck {
     userLoading: boolean = false;
 
     @ViewChild('edituser') editPopup!: PopupComponent;
-    @ViewChild('deleteuser') deletePopup!: PopupComponent;
     private popIn?: PopupInstance;
 
     constructor(
@@ -35,14 +34,6 @@ export class UsersListComponent extends PermCheck {
         this.user = JSON.parse(JSON.stringify(user));
         this.popIn = this._pop.show(this.editPopup);
     }
-
-    deleteUser(user: BuddyUserRoles) {
-        this.user = JSON.parse(JSON.stringify(user));;
-        this.popIn = this._pop.show(this.deletePopup);
-    }
-
-    cancelDelete() { }
-    commitDelete() { }
 
     search() {
         const filter = <UserFilters>{
@@ -64,18 +55,14 @@ export class UsersListComponent extends PermCheck {
     }
 
     toggleRole(user: BuddyUserRoles, role: BuddyRole) {
-        console.log('Check');
         if (!this.hasRole(user, role)) {
             user.roles.push(role);
-            console.log('Roles Set', { user, role });
             return;
         }
 
         const i = user.roles.findIndex(t => t.id === role.id);
-        console.log('Check', { i });
         if (i === -1) return;
         user.roles.splice(i, 1);
-        console.log('Roles Set', { user, role });
     }
 
     save() {

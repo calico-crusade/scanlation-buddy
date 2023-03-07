@@ -55,10 +55,7 @@
                         </div>
                     </div>
                     <div class="buttons" *ngIf="hasAdminGrantRoles">
-                        <button (click)="deleteUser(user)">
-                            <box-icon>delete</box-icon>
-                        </button>
-                        <button *ngIf="hasAdminGrantRoles" (click)="editUser(user)">
+                        <button (click)="editUser(user)">
                             <box-icon>edit</box-icon>
                         </button>
                     </div>
@@ -90,23 +87,5 @@
                 <p>Save</p>
             </button>
         </footer>
-    </main>
-</app-popup>
-
-<app-popup #deleteuser title="Are you sure?" [loading]="userLoading">
-    <main class="flex fill-parent delete-confirm" *ngIf="user">
-        <div class="center">
-            <h2>Are you sure you want to delete {{ user.user.username }}? </h2>
-            <footer>
-                <button class="icon-btn primary" (click)="cancelDelete()">
-                    <span><box-icon>cancel</box-icon></span>
-                    <p>Cancel</p>
-                </button>
-                <button class="icon-btn warning" (click)="commitDelete()">
-                    <span><box-icon>delete</box-icon></span>
-                    <p>Yes, I'm sure</p>
-                </button>
-            </footer>
-        </div>
     </main>
 </app-popup>
