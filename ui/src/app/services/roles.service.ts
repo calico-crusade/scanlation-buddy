@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpService } from "@cardboard-box/ngx-box";
+import { HttpService, RxjsHttpResp } from "@cardboard-box/ngx-box";
 import { CachedObservable } from "./helper-methods";
 import { BuddyPermission, BuddyRole } from "./models";
 
@@ -23,6 +23,14 @@ export class RolesService {
 
     put(role: BuddyRole) {
         return this.http.put(`roles`, role)
+            .tap(() => this._roles$.invalidate());
+    }
+
+    delete(role: BuddyRole): RxjsHttpResp<unknown>;
+    delete(id: number): RxjsHttpResp<unknown>;
+    delete(item: number | BuddyRole) {
+        if (typeof item !== 'number') item = item.id;
+        return this.http.delete(`roles/${item}`)
             .tap(() => this._roles$.invalidate());
     }
 }

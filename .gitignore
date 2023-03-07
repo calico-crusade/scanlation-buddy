@@ -351,3 +351,4 @@ MigrationBackup/
 wwwroot/
 dist/
 /src/ScanlationBuddy.Web/scanlation-buddy.db
+launchSettings.json

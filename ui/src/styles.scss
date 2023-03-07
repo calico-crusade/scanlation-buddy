@@ -3,6 +3,7 @@
     --background: #121318;
     --pri-accent: #212328;
     --primary: #726ae4;
+    --warning: rgb(255, 61, 61);
     --text-color: #dedede;
     --text-color-muted: rgb(134, 133, 133);
     --font-family: Poppins, sans-serif;
@@ -96,6 +97,16 @@ a, button {
         margin: auto 0;
         margin-right: 5px;
     }
+
+    &.primary, &.warning {
+        background-color: var(--primary);
+        border-radius: 5px;
+        padding: 5px 10px;
+    }
+
+    &.warning {
+        background-color: var(--warning);
+    }
 }
 
 .table-fill {
@@ -159,4 +170,90 @@ a, button {
 
 .marked-container {
     p, h1, h2, h3, h4, h5, h6 { margin: 0; }
+}
+
+.form-control {
+    display: flex;
+    flex-flow: column;
+
+    input, textarea, select {
+        background-color: var(--pri-accent);
+        border: 1px solid var(--background);
+        border-radius: 5px;
+        padding: 5px 10px;
+        outline: none;
+        color: var(--text-color);
+        font-family: var(--font-family);
+        resize: none;
+        font-size: 16px;
+
+        &::placeholder {
+            color: var(--text-color-muted);
+        }
+
+        &:hover, &:focus {
+            border-color: var(--primary);
+        }
+    }
+
+    input[type=color] {
+        width: 100%;
+    }
+}
+
+$checkbox-size: 15px;
+
+.checkbox {
+    display: block;
+    position: relative;
+    padding-left: #{$checkbox-size + 10px};
+    cursor: pointer;
+    font-size: 16px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+
+    .checkmark {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        height: $checkbox-size;
+        width: $checkbox-size;
+        background-color: var(--primary);
+
+        &:after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 50%;
+            top: 50%;
+            transform: translate(-30%, -75%) rotate(45deg);
+            transform-origin: 0;
+            width: 3px;
+            height: 8px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+        }
+    }
+
+    &:hover input ~ .checkmark {
+        background-color: var(--primary);
+    }
+
+    input:checked ~ .checkmark {
+        background-color: var(--primary);
+    }
+
+    input:checked ~ .checkmark:after {
+        display: block;
+    }
 }

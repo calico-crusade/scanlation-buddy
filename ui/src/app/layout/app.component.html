@@ -118,15 +118,13 @@
             </main>
             <app-chat-popup #chatapp></app-chat-popup>
         </div>
-
     </div>
     
-    <div class="content" *ngSwitchCase="1">
-        <main>
+    <div class="content flex" *ngSwitchCase="1">
+        <main class="fill">
             <box-container [loading]="true" loading-text="Logging you in... Please wait while the hamster runs!"></box-container>
         </main>
     </div>
-
 
     <div class="content flex" *ngSwitchCase="4">
         <div class="center flex row">

@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { PopupInstance, PopupService } from 'src/app/components';
 import { PopupComponent } from 'src/app/components/popup/popup.component';
-import { BuddyRole, RolesService } from 'src/app/services';
+import { AuthService, BuddyRole, RolesService } from 'src/app/services';
 
 @Component({
     templateUrl: './settings-roles.component.html',
@@ -15,12 +15,17 @@ export class SettingsRolesComponent {
     perms$ = this._roles.perms$;
 
     role?: BuddyRole;
+    roleLoading: boolean = false;
+
+    repeat = Array(10);
 
     @ViewChild('editrole') editPopup!: PopupComponent;
+    @ViewChild('deleteconfirm') deletePopup!: PopupComponent;
 
     constructor(
         private _roles: RolesService,
-        private _popup: PopupService
+        private _popup: PopupService,
+        private _auth: AuthService
     ) { }
 
     selectRole(role: BuddyRole) {
@@ -34,20 +39,27 @@ export class SettingsRolesComponent {
             description: 'Fancy things are happening!',
             permissions: [],
             creatorId: -1,
-            color: '#fff',
+            color: '#ffffff',
             id: -1
         };
         this._editInst = this._popup.show(this.editPopup);
     }
 
+    startDelete(role: BuddyRole) {
+        this.role = role;
+        this._editInst = this._popup.show(this.deletePopup);
+    }
+
     save() {
         if (!this.role) return;
 
+        this.roleLoading = true;
         if (this.role.id === -1) {
             this._roles
                 .post(this.role)
                 .subscribe(t => {
                     this._editInst?.cancel();
+                    this.roleLoading = false;
                 });
             return;
         }
@@ -56,6 +68,32 @@ export class SettingsRolesComponent {
             .put(this.role)
             .subscribe(t => {
                 this._editInst?.cancel();
+                this.roleLoading = false;
             });
     }
+
+    toggleCheckbox(perm: string, role: BuddyRole) {
+        const i = role.permissions.indexOf(perm);
+        if (i === -1) {
+            role.permissions.push(perm);
+            return;
+        }
+
+        role.permissions.splice(i, 1);
+    }
+
+    cancelDelete() { this._editInst?.cancel(); }
+    commitDelete() {
+        if (!this.role) return;
+
+        this.roleLoading = true;
+        this._roles
+            .delete(this.role)
+            .subscribe(t => {
+                this._editInst?.cancel();
+                this.roleLoading = false;
+            })
+    }
+
+    hasPerm(perm: string) { return this._auth.hasPerm(perm); }
 }

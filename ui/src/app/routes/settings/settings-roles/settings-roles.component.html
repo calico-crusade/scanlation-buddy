@@ -3,19 +3,21 @@
         <main class="scroll-list" *ngIf="roles$ | async as roles">
             <header>
                 <h2>Roles</h2>
-                <button (click)="newRole()">
+                <button (click)="newRole()"  *ngIf="hasPerm('Admin - Edit Roles')">
                     <box-icon>add</box-icon>
                 </button>
             </header>
             <div class="role" *ngFor="let role of roles">
                 <div class="title">
                     <span [style.color]="role.color">{{ role.name }}</span>
-                    <button (click)="selectRole(role)">
-                        <box-icon>edit</box-icon>
-                    </button>
-                    <button>
-                        <box-icon>delete</box-icon>
-                    </button>
+                    <ng-container *ngIf="hasPerm('Admin - Edit Roles')">
+                        <button (click)="selectRole(role)">
+                            <box-icon>edit</box-icon>
+                        </button>
+                        <button (click)="startDelete(role)">
+                            <box-icon>delete</box-icon>
+                        </button>
+                    </ng-container>
                 </div>
                 <div class="desc marked-container" [markdown]="role.description"></div>
                 <div class="desc">
@@ -35,15 +37,86 @@
 </box-container>
 
 <app-popup #editrole [title]="'Role: ' + role?.name">
-    <main *ngIf="role">
-        <label>Name</label>
-        <input [(ngModel)]="role.name" />
+    <main class="popup-edit-role" *ngIf="role && !roleLoading; else roleloading">
+        <div class="form-control">
+            <label>Name</label>
+            <input [(ngModel)]="role.name" placeholder="Role Name" />
+        </div>
 
-        <label>Description</label>
-        <textarea [(ngModel)]="role.description"></textarea>
+        <div class="form-control">
+            <label>Description</label>
+            <textarea [(ngModel)]="role.description" placeholder="Role Description"></textarea>
+        </div>
 
-        <button (click)="save()">
-            <box-icon>save</box-icon>
-        </button>
+        <div class="form-control">
+            <label>Color</label>
+            <input type="color" [(ngModel)]="role.color" />
+        </div>
+
+        <div class="perms-grid">
+            <label class="title">Permissions:</label>
+            <label class="checkbox" *ngFor="let perm of perms$ | async">
+                {{ perm.name }}
+                <input type="checkbox" 
+                    [ngModel]="role.permissions.indexOf(perm.name) !== -1"
+                    (change)="toggleCheckbox(perm.name, role)"  />
+                <span class="checkmark"></span>
+            </label>
+        </div>
+        
+        <footer>
+            <button class="icon-btn primary" (click)="save()">
+                <span><box-icon>save</box-icon></span>
+                <p>Save</p>
+            </button>
+        </footer>
     </main>
+    <ng-template #roleloading>
+        <magic-circle spin-speed="20s" width="300px" height="300px">
+            <mc-ring text="Some fancy stuff is happening... Sit tight...">
+                <mc-square [total]="3" [index]="0"></mc-square>
+                <mc-square [total]="3" [index]="1"></mc-square>
+                <mc-square [total]="3" [index]="2">
+                    <mc-ring text="Loading... Loading... Loading...">
+                        <mc-square [total]="3" [index]="0"></mc-square>
+                        <mc-square [total]="3" [index]="1"></mc-square>
+                        <mc-square [total]="3" [index]="2"></mc-square>
+                    </mc-ring>
+                </mc-square>
+            </mc-ring>
+        </magic-circle>
+    </ng-template>
+</app-popup>
+
+<app-popup #deleteconfirm title="Are you sure?">
+    <main class="flex fill-parent delete-confirm" *ngIf="role && !roleLoading; else roleloading2">
+        <div class="center">
+            <h2>Are you sure you want to delete {{ role.name }}? </h2>
+            <footer>
+                <button class="icon-btn primary" (click)="cancelDelete()">
+                    <span><box-icon>cancel</box-icon></span>
+                    <p>Cancel</p>
+                </button>
+                <button class="icon-btn warning" (click)="commitDelete()">
+                    <span><box-icon>delete</box-icon></span>
+                    <p>Yes, I'm sure</p>
+                </button>
+            </footer>
+        </div>
+    </main>
+    <ng-template #roleloading2>
+        <magic-circle spin-speed="20s" width="300px" height="300px">
+            <mc-ring text="Some fancy stuff is happening... Sit tight...">
+                <mc-square [total]="3" [index]="0"></mc-square>
+                <mc-square [total]="3" [index]="1"></mc-square>
+                <mc-square [total]="3" [index]="2">
+                    <mc-ring text="Loading... Loading... Loading...">
+                        <mc-square [total]="3" [index]="0"></mc-square>
+                        <mc-square [total]="3" [index]="1"></mc-square>
+                        <mc-square [total]="3" [index]="2"></mc-square>
+                    </mc-ring>
+                </mc-square>
+            </mc-ring>
+        </magic-circle>
+    </ng-template>
 </app-popup>

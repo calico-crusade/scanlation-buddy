@@ -1,12 +1,14 @@
-h2, p {
-    margin: 0;
-}
+
 
 .marked-container {
     color: var(--text-color-muted);
 }
 
 .colmatic {
+    h2, p {
+        margin: 0;
+    }
+
     main {
         display: flex;
         flex-flow: column;
@@ -48,13 +50,63 @@ h2, p {
             }
 
             .desc {
+                display: flex;
+                flex-flow: row wrap;
+                label {
+                    margin-top: 5px;
+                }
+
                 .tag {
+                    margin-top: 5px;
+                    margin-left: 5px;
                     padding: 0 5px;
                     background-color: var(--primary);
                     border-radius: 5px;
-                    margin-right: 5px;
+                    white-space: pre;
                 }
             }
         }
     }
 }
+
+.popup-edit-role {
+    display: flex;
+    flex-flow: column;
+    min-height: 100%;
+
+    .perms-grid {
+        display: flex;
+        flex-flow: row wrap;
+    
+        .title {
+            width: 100%;
+        }
+    
+        .checkbox {
+            width: 40%;
+        }
+    }
+
+    footer {
+        margin-top: auto;
+        display: flex;
+
+        :first-child {
+            margin-left: auto;
+        }
+    }
+}
+
+.delete-confirm {
+    .center {
+        footer {
+            display: flex;
+            flex-flow: row;
+
+            button {
+                margin: 5px auto;
+            }
+        }
+    }
+}
+

@@ -42,16 +42,13 @@ export class AuthService {
     state$ = this._stateSub.asObservable();
     user$ = this._userSub.asObservable();
     roles$ = this._roleSub.asObservable();
-    perms$ = this.roles$.pipe(
-        map(t => t.map(t => t.permissions).flat().filter((value, index, array) => array.indexOf(value) === index))
-    );
+    perms$ = this.roles$.pipe(map(t => this.permsFromRoles(t)));
 
     get isLoggingIn() { return this._stateSub.value === LoginState.LoginInProgress; }
-
     get rootUrl() { return this.pathCombine(window.location.origin, this.loc.getBaseHrefFromDOM()); }
-
     get authUrl() { return environment.authUrl; }
     get appId() { return environment.appId; }
+    get user() { return this._userSub.getValue(); }
 
     constructor(
         private http: HttpService,
@@ -174,6 +171,12 @@ export class AuthService {
 
     private promptFirstTime() { return this.http.get<{ worked: boolean }>(`auth/is-first-time`); }
 
+    private permsFromRoles(roles: BuddyRole[]) {
+        return roles.map(t => t.permissions)
+            .flat()
+            .filter((value, index, array) => array.indexOf(value) === index);
+    }
+
     pathCombine(...parts: string[]) {
         return parts.map(t => {
             if (t.startsWith('/')) t = t.substring(1);
@@ -181,5 +184,10 @@ export class AuthService {
 
             return t;
         }).filter(t => t).join('/');
+    }
+
+    hasPerm(perm: string) {
+        const perms = this.permsFromRoles(this._roleSub.getValue());
+        return perms.indexOf(perm) !== -1;
     }
 }

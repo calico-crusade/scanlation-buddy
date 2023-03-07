@@ -8,24 +8,24 @@ import { AuthService } from '../services';
 })
 export class AppComponent implements OnInit {
 
-    state$ = this.auth.state$;
-    user$ = this.auth.user$;
+    state$ = this._auth.state$;
+    user$ = this._auth.user$;
 
     drawerOpen: boolean = true;
 
     constructor(
-        private auth: AuthService
+        private _auth: AuthService
     ) { }
 
     ngOnInit(): void {
-        this.auth.bump();
+        this._auth.bump();
     }
 
     login() {
-        this.auth.login();
+        this._auth.login();
     }
 
     logout() {
-        this.auth.logout();
+        this._auth.logout();
     }
 }
