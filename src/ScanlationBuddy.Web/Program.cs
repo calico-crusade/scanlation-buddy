@@ -8,6 +8,7 @@ builder.Services.AddSwaggerGen();
 builder.Services
 	   .AddCardboardHttp()
 	   .AddDatabase()
+	   .AddCore()
 	   .AddOAuth(builder.Configuration);
 
 var app = builder.Build();

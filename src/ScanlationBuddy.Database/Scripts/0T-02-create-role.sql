@@ -12,5 +12,6 @@
 	updated_at TEXT NOT NULL,
 	deleted_at TEXT,
 
-	FOREIGN KEY(creator_id) REFERENCES buddy_user(id)
+	FOREIGN KEY(creator_id) REFERENCES buddy_user(id),
+	UNIQUE(name, deleted_at)
 )

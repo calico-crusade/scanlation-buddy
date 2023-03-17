@@ -1,4 +1,4 @@
-$menu-width: 300px;
+$menu-width: 250px;
 
 .content {
     position: absolute;
@@ -86,7 +86,7 @@ $menu-width: 300px;
         flex-flow: column;
         margin: 0 auto;
         width: 100%;
-        max-width: 1440px;
+        max-width: 1770px; //1440px;
         padding: 0 10px;
 
         header {

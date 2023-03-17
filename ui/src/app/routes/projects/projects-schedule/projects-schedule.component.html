@@ -1,1 +1,37 @@
-<p>projects-schedule works!</p>
+<box-container [loading]="!(calendar$ | async)" handle-scroll>
+    <div class="calendar" *ngIf="calendar$ | async as calendar">
+        <header class="calendar-buttons">
+            <div class="title">
+                Release Schedule
+            </div>
+            <button>
+                <box-icon>chevron_left</box-icon>
+            </button>
+            <div class="month">
+                {{ calendar.target.toJSDate() | date: 'MMMM yyyy' }}
+            </div>
+            <button>
+                <box-icon>chevron_right</box-icon>
+            </button>
+        </header>
+        <header class="calendar-header" *ngIf="calendar.weeks.length > 0">
+            <div class="week-header" *ngFor="let day of calendar.weeks[0].days">
+                {{ day.start.toJSDate() | date:'EEE' }}
+            </div>
+        </header>
+        <main>
+            <ng-container  *ngFor="let week of calendar.weeks">
+                <div class="day" *ngFor="let day of week.days" [ngClass]="{ 'today': day.today, 'aux': !day.inMonth }">
+                    <header>{{ day.start.toJSDate() | date:'dd' }}</header>
+                    <div class="event" *ngFor="let event of day.events">
+                        <img [proxy]="event.cover" />
+                        <div class="data">
+                            <div class="title">{{ event.title }}</div>
+                            <div class="release">{{ event.createdAt | date:'HH:mm' }}</div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </main>
+    </div>
+</box-container>

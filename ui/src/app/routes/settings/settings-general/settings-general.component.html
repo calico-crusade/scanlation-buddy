@@ -1,1 +1,40 @@
-<p>settings-general works!</p>
+<box-container [loading]="!(config$ | async)" [handle-scroll]="true" flex-flow="column">
+    <div class="colmatic">
+        <main class="scroll-list" *ngIf="config$ | async as config">
+            <header>
+                <h2>Configure Settings</h2>
+            </header>
+            <ng-container  *ngFor="let group of config">
+                <h2 class="group-name">{{ group.name }}</h2>
+                <div class="config" *ngFor="let conf of group.settings">
+                    <div class="title">
+                        <p>{{ conf.key }}</p>
+                        <button (click)="edit(conf)">
+                            <box-icon>edit</box-icon>
+                        </button>
+                    </div>
+                    <div class="description marked-container" [markdown]="conf.description"></div>
+                </div>
+            </ng-container>
+        </main>
+    </div>
+</box-container>
+
+<app-popup #editpopup [title]="'Edit config: ' + config?.key" [loading]="loading">
+    <main class="popup-content" *ngIf="config">
+        <div [markdown]="config.description" class="marked-container"></div>
+
+        <div class="form-control">
+            <label>Value:</label>
+            <input type="text" [(ngModel)]="config.value" [placeholder]="config.key" />
+        </div>
+
+        <label>Warning: It's very easy to break things, make sure you backup frequently, and know what you're doing!</label>
+
+        <footer>
+            <button class="icon-btn primary" (click)="update()">
+                <box-icon>save</box-icon>
+            </button>
+        </footer>
+    </main>
+</app-popup>

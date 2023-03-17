@@ -10,5 +10,7 @@
 
 	created_at TEXT NOT NULL,
 	updated_at TEXT NOT NULL,
-	deleted_at TEXT
+	deleted_at TEXT,
+
+	UNIQUE(provider_id)
 )

@@ -25,8 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ScanlationBuddy.Auth\ScanlationBuddy.Auth.csproj" />
-      <ProjectReference Include="..\ScanlationBuddy.Database\ScanlationBuddy.Database.csproj" />
+      <ProjectReference Include="..\ScanlationBuddy.Core\ScanlationBuddy.Core.csproj" />
     </ItemGroup>
 
 </Project>

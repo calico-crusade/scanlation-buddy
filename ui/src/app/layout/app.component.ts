@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PermCheck } from '../components';
 import { AuthService } from '../services';
 
 @Component({
@@ -6,7 +7,7 @@ import { AuthService } from '../services';
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent extends PermCheck implements OnInit {
 
     state$ = this._auth.state$;
     user$ = this._auth.user$;
@@ -15,7 +16,7 @@ export class AppComponent implements OnInit {
 
     constructor(
         private _auth: AuthService
-    ) { }
+    ) { super(_auth); }
 
     ngOnInit(): void {
         this._auth.bump();

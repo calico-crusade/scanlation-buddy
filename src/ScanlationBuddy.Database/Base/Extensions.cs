@@ -13,7 +13,9 @@ public static class Extensions
              .ForEntity<BuddyProject>()
              .ForEntity<BuddyRole>()
              .ForEntity<BuddyRoleUser>()
-             .ForEntity<BuddyUserRole>();
+             .ForEntity<BuddyUserRole>()
+             .ForEntity<BuddyFile>()
+             .ForEntity<BuddyConfig>();
         });
 
         MapConfig.StartMap();
@@ -39,6 +41,8 @@ public static class Extensions
             .AddTransient<IUserDbService, UserDbService>()
             .AddTransient<IProjectDbService, ProjectDbService>()
             .AddTransient<IRoleDbService, RoleDbService>()
+            .AddTransient<IFileDbService, FileDbService>()
+            .AddTransient<IConfigDbService, ConfigDbService>()
 
             .AddTransient<IDbService, DbService>();
 	}

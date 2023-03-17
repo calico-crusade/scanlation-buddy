@@ -59,7 +59,7 @@
                 <span><box-icon>settings</box-icon></span>
                 <p>Settings</p>
             </h2>
-            <a class="nav-item" routerLink="/settings/general" routerLinkActive="active">
+            <a class="nav-item" routerLink="/settings/general" routerLinkActive="active" *ngIf="hasAdminEditConfig">
                 <span><box-icon>tune</box-icon></span>
                 <p>General</p>
             </a>
@@ -70,9 +70,6 @@
             <a class="nav-item" routerLink="/settings/logins" routerLinkActive="active">
                 <span><box-icon>password</box-icon></span>
                 <p>MD Logins</p>
-            </a>
-            <a class="nav-item" routerLink="/settings/discord" routerLinkActive="active">
-                <span><box-icon></box-icon></span>
             </a>
     
             <div class="external">

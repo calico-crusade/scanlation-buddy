@@ -3,7 +3,7 @@
 
 	public interface IProjectDbService
 	{
-		Task<long> Upsert(BuddyProject project);
+		Task<(long id, bool isNew)> Upsert(BuddyProject project);
 
 		Task<PaginatedResult<BuddyProject>> Paginate(int page = 1, int size = 100);
 
@@ -16,7 +16,7 @@
 
 		public ProjectDbService(IDbQueryBuilderService query, ISqlService sql) : base(query, sql) { }
 
-		public Task<long> Upsert(BuddyProject project)
+		public Task<(long id, bool isNew)> Upsert(BuddyProject project)
 		{
 			return Upsert(project, v => v.With(t => t.Hash), 
 				updates: t => t.With(c => c.Id).With(c => c.CreatedAt).With(t => t.MangaDexId));

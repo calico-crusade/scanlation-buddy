@@ -11,5 +11,6 @@
 
 	FOREIGN KEY(creator_id) REFERENCES buddy_user(id),
 	FOREIGN KEY(user_id) REFERENCES buddy_user(id),
-	FOREIGN KEY(role_id) REFERENCES buddy_role(id)
+	FOREIGN KEY(role_id) REFERENCES buddy_role(id),
+	UNIQUE(user_id, role_id)
 )

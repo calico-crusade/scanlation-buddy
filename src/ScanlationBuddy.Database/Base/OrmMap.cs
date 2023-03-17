@@ -40,6 +40,7 @@ public abstract class OrmMapExtended<T> : OrmMap<T>
 	private string? _insertQuery;
 	private string? _updateQuery;
 	private string? _paginateQuery;
+	private string? _insertReturnQuery;
 
 	private List<string> _queryCache = new();
 
@@ -53,6 +54,11 @@ public abstract class OrmMapExtended<T> : OrmMap<T>
 		return _sql.Fetch<T>(_fetchQuery, new { id });
 	}
 
+	public virtual Task<long> InsertReturn(T obj)
+	{
+		_insertReturnQuery ??= _query.InsertReturn<T, long>(TableName, t => t.Id);
+		return _sql.ExecuteScalar<long>(_insertReturnQuery, obj);
+	}
 
 	public virtual Task Insert(T obj)
 	{
@@ -88,7 +94,7 @@ public abstract class OrmMapExtended<T> : OrmMap<T>
 		return Paginate(_paginateQuery, null, page, size);
 	}
 
-	public async Task<long> Upsert(T item, 
+	public async Task<(long id, bool isNew)> Upsert(T item, 
 		Action<PropertyExpressionBuilder<T>> conflicts,
 		Action<PropertyExpressionBuilder<T>>? inserts = null,
 		Action<PropertyExpressionBuilder<T>>? updates = null,
@@ -113,10 +119,10 @@ public abstract class OrmMapExtended<T> : OrmMap<T>
 
 		var exists = await _sql.Fetch<T>(select, item);
 		if (exists == null)
-			return await _sql.ExecuteScalar<long>(insert, item);
+			return (await _sql.ExecuteScalar<long>(insert, item), true);
 
 		item.Id = exists.Id;
 		await _sql.Execute(update, item);
-		return exists.Id;
+		return (exists.Id, false);
 	}
 }

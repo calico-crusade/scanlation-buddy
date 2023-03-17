@@ -37,3 +37,18 @@ export interface BuddyUserRoles {
     user: BuddyUser;
     roles: BuddyRole[];
 }
+
+export interface BuddyConfig extends Buddy {
+    key: string;
+    value: string;
+    description: string;
+    groupName: string;
+}
+
+export interface BuddyFile extends Buddy {
+    filename: string;
+    hash: string;
+    mimeType: string;
+    length: number;
+    creatorId: number;
+}

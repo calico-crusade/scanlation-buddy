@@ -1,0 +1,100 @@
+.calendar {
+    flex: 1;
+    display: flex;
+    flex-flow: column;
+    padding-right: 5px;
+    position: relative;
+    height: auto;
+    overflow-y: auto;
+
+    .calendar-buttons {
+        display: flex;
+        flex-flow: row;
+        background-color: var(--background);
+
+        button {
+            margin: auto 5px;
+        }
+
+        .title, .month {
+            margin: auto 0;
+        }
+
+        .title {
+            margin-right: auto;
+        }
+    }
+
+    .calendar-header {
+        position: sticky;
+        top: 0;
+        left: 0;
+        background-color: var(--background);
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        border-bottom: 2px solid var(--brd-color-accent);
+
+        .week-header {
+            text-transform: uppercase;
+            padding: 5px;
+        }
+    }
+
+    main {
+        flex: 1;
+        margin-bottom: 10px;
+
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+
+        .day {
+            border: 0 solid var(--brd-color-accent);
+            border-left-width: 1px;
+            border-top-width: 1px;
+            padding: 5px;
+
+            .event {
+                display: flex;
+                flex-flow: row;
+                overflow: hidden;
+                padding: 5px;
+                background-color: var(--pri-accent);
+                border-radius: 5px;
+                margin-bottom: 5px;
+
+                img {
+                    height: 50px;
+                    margin-right: 5px;
+                }
+                
+                .data {
+                    display: flex;
+                    flex-flow: column;
+                    flex: 1;
+                    overflow: hidden;
+
+                    .title {
+                        max-width: 100%;
+                        overflow-x: hidden;
+                        text-overflow: ellipsis;
+                        white-space: pre;
+                    }
+                }
+            }
+
+            &.today {
+                header { color: var(--primary); }
+            }
+
+            &.aux {
+                header { color: var(--text-color-muted); }
+            }
+
+            &:nth-child(n+7) {
+                border-right-width: 1px;
+            }
+        }
+
+        border-bottom: 1px solid var(--brd-color-accent);
+    }
+}

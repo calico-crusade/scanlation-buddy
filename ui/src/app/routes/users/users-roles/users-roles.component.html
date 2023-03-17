@@ -9,7 +9,7 @@
             </header>
             <div class="role" *ngFor="let role of roles">
                 <div class="title">
-                    <span [style.color]="role.color">{{ role.name }}</span>
+                    <span [style.color]="role.color">{{ role.name }} ({{ role.id }})</span>
                     <ng-container *ngIf="hasAdminEditRoles">
                         <button (click)="selectRole(role)">
                             <box-icon>edit</box-icon>

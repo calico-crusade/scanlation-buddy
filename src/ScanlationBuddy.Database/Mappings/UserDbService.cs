@@ -2,7 +2,7 @@
 
 public interface IUserDbService
 {
-	Task<long> Upsert(BuddyUser user);
+	Task<(long id, bool isNew)> Upsert(BuddyUser user);
 
 	Task<BuddyUser> Fetch(long userId);
 
@@ -29,7 +29,7 @@ public class UserDbService : OrmMapExtended<BuddyUser>, IUserDbService
 		return _sql.ExecuteScalar<int>("SELECT COUNT(*) FROM buddy_user WHERE deleted_at IS NULL");
 	}
 
-	public Task<long> Upsert(BuddyUser user)
+	public Task<(long id, bool isNew)> Upsert(BuddyUser user)
 	{
 		return Upsert(user, v => v.With(t => t.PlatformId));
 	}
@@ -47,8 +47,8 @@ public class UserDbService : OrmMapExtended<BuddyUser>, IUserDbService
 	DISTINCT
     u.*
 FROM buddy_user u
-LEFT JOIN buddy_user_role bur ON u.id = bur.user_id
-LEFT JOIN buddy_role r ON r.id = bur.role_id
+LEFT JOIN buddy_user_role bur ON u.id = bur.user_id AND bur.deleted_at IS NULL
+LEFT JOIN buddy_role r ON r.id = bur.role_id AND r.deleted_at IS NULL
 WHERE
     {0}
 ORDER BY u.created_at DESC
@@ -58,28 +58,26 @@ OFFSET :offset;
 SELECT
 	COUNT(DISTINCT u.id)
 FROM buddy_user u
-LEFT JOIN buddy_user_role bur ON u.id = bur.user_id
-LEFT JOIN buddy_role r ON r.id = bur.role_id
+LEFT JOIN buddy_user_role bur ON u.id = bur.user_id AND bur.deleted_at IS NULL
+LEFT JOIN buddy_role r ON r.id = bur.role_id AND r.deleted_at IS NULL
 WHERE
     {0};
 
 SELECT
 	DISTINCT
     r.*,
-	u.id as user_id
-FROM buddy_user u
-JOIN buddy_user_role bur on u.id = bur.user_id
-JOIN buddy_role r ON r.id = bur.role_id
+	bur.user_id as user_id
+FROM buddy_role r
+JOIN buddy_user_role bur on r.id = bur.role_id AND bur.deleted_at IS NULL
+JOIN buddy_user u ON u.id = bur.user_id AND u.deleted_at IS NULL
 WHERE
 	r.deleted_at IS NULL AND
-	bur.deleted_at IS NULL AND
-	u.deleted_at IS NULL AND
-    u.id IN (
+    bur.user_id IN (
         SELECT
 			u.id
 		FROM buddy_user u
-		JOIN buddy_user_role bur ON u.id = bur.user_id
-		JOIN buddy_role r ON r.id = bur.role_id
+		JOIN buddy_user_role bur ON u.id = bur.user_id AND bur.deleted_at IS NULL
+		JOIN buddy_role r ON r.id = bur.role_id AND r.deleted_at IS NULL
 		WHERE
 			{0}
     )
@@ -87,8 +85,6 @@ ORDER BY u.created_at DESC;";
 
 		var parts = new List<string>
 		{
-			"r.deleted_at IS NULL",
-			"bur.deleted_at IS NULL",
 			"u.deleted_at IS NULL"
 		};
 		var pars = new DynamicParameters();

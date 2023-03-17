@@ -18,9 +18,19 @@ public static class Permissions
 	public const string PERM_ADMIN_EDIT_ROLES = "Admin - Edit Roles";
 
 	/// <summary>
+	/// The person can see and edit site configurations
+	/// </summary>
+	public const string PERM_ADMIN_CONFIG = "Admin - Edit Config";
+
+	/// <summary>
 	/// The person can create / import projects on the site 
 	/// </summary>
 	public const string PERM_PROJECT_CREATE = "Project - Create";
+
+	/// <summary>
+	/// Allows the person to upload assets to the site for general download
+	/// </summary>
+	public const string PERM_ASSET_UPLOAD = "Asset Upload";
 
 
 	public static Permission[] PermissionDescriptions = new Permission[]
@@ -29,7 +39,9 @@ public static class Permissions
 		
 		new(PERM_ADMIN_ROLES, "Change / assign the roles of users."),
 		new(PERM_ADMIN_EDIT_ROLES, "Create / edit roles within the application."),
-		new(PERM_PROJECT_CREATE, "Create / import projects on the site.")
+		new(PERM_ADMIN_CONFIG, "See / edit site configurations"),
+		new(PERM_PROJECT_CREATE, "Create / import projects on the site."),
+		new(PERM_ASSET_UPLOAD, "Allows for uploading of asset files.")
 	};
 
 	/// <summary>

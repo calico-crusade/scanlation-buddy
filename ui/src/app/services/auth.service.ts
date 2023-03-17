@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { HttpService } from "@cardboard-box/ngx-box";
 import { BehaviorSubject, map } from "rxjs";
 import { environment } from "src/environments/environment";
-import { ConfigService } from "./config.service";
+import { StaticConfigService } from "./config.service";
 import { BuddyRole, BuddyUser } from "./models";
 
 export enum LoginState {
@@ -53,7 +53,7 @@ export class AuthService {
     constructor(
         private http: HttpService,
         private loc: PlatformLocation,
-        private config: ConfigService
+        private config: StaticConfigService
     ) { }
 
 
@@ -70,14 +70,6 @@ export class AuthService {
             this._userSub.next(me.profile);
             this._roleSub.next(me.roles);
             if (me.roles.length === 0) {
-                try {
-                    const { worked } = await this.promptFirstTime().promise;
-                    if (worked) {
-                        alert('First time setup detected. Please login again.');
-                        return await this.login();
-                    }
-                } catch {}
-
                 this._stateSub.next(LoginState.NotVerified);
                 return { error: 'Not verified!' };
             }
@@ -128,6 +120,8 @@ export class AuthService {
         this.config.token = undefined;
         this._userSub.next(undefined);
         this._stateSub.next(LoginState.NotLoggedIn);
+
+        location.reload();
     }
 
     private async doLoginPopup() {

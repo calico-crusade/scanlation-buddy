@@ -7,6 +7,8 @@ import { ProjectsNewComponent } from './projects-new/projects-new.component';
 import { ProjectsImportComponent } from './projects-import/projects-import.component';
 import { ProjectsScheduleComponent } from './projects-schedule/projects-schedule.component';
 import { ProjectsEditComponent } from './projects-edit/projects-edit.component';
+import { ComponentsModule } from 'src/app/components';
+import { COMMON_IMPORTS } from 'src/app/common-imports';
 
 
 @NgModule({
@@ -19,7 +21,9 @@ import { ProjectsEditComponent } from './projects-edit/projects-edit.component';
     ],
     imports: [
         CommonModule,
-        ProjectsRoutingModule
+        ProjectsRoutingModule,
+        ComponentsModule,
+        ...COMMON_IMPORTS
     ]
 })
 export class ProjectsModule { }
