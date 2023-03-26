@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, forkJoin, map } from 'rxjs';
+import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { queryParam } from 'src/app/services';
 
 @Component({
@@ -12,7 +11,6 @@ export class ErrorComponent {
     error$ = queryParam(this.route, 'error');
 
     constructor(
-        private route: ActivatedRoute,
-        private router: Router
+        private route: ActivatedRoute
     ) { }
 }

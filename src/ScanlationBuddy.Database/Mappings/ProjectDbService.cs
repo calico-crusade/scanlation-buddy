@@ -12,9 +12,7 @@
 
 	public class ProjectDbService : OrmMapExtended<BuddyProject>, IProjectDbService
 	{
-		public override string TableName => "buddy_project";
-
-		public ProjectDbService(IDbQueryBuilderService query, ISqlService sql) : base(query, sql) { }
+		public ProjectDbService(IQueryService query, ISqlService sql) : base(query, sql) { }
 
 		public Task<(long id, bool isNew)> Upsert(BuddyProject project)
 		{

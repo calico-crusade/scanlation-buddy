@@ -1,5 +1,6 @@
 ﻿namespace ScanlationBuddy.Database;
 
+[Table("buddy_project")]
 public class BuddyProject : DbObject
 {
 	[JsonPropertyName("hash")]

@@ -12,5 +12,4 @@ public class FileController : ControllerBase
 		_upload = upload;
 	}
 
-	[HttpPost, Route("api/file/asset")]
 }

@@ -4,100 +4,79 @@ namespace ScanlationBuddy.Database;
 
 public abstract class OrmMap<T>
 {
-	private string? _allQuery;
-	private string? _allNonDeletedQuery;
+	private static string? _allQuery;
+	private static string? _fetchQuery;
+	private static string? _insertQuery;
+	private static string? _updateQuery;
 
-	public readonly IDbQueryBuilderService _query;
+	public readonly IQueryService _query;
 	public readonly ISqlService _sql;
 
-	public abstract string TableName { get; }
-
 	public OrmMap(
-		IDbQueryBuilderService query,
+		IQueryService query,
 		ISqlService sql)
 	{
 		_query = query;
 		_sql = sql;
 	}
 
-	public virtual Task<T[]> All()
-	{
-		_allNonDeletedQuery ??= _query.SelectAllNonDeleted(TableName);
-		return _sql.Get<T>(_allNonDeletedQuery);
-	}
-
 	public virtual Task<T[]> AllWithDeleted()
 	{
-		_allQuery ??= _query.SelectAll(TableName);
+		_allQuery ??= _query.Select<T>();
 		return _sql.Get<T>(_allQuery);
+	}
+
+	public virtual Task<T?> Fetch(long id)
+	{
+		_fetchQuery ??= _query.Fetch<T>();
+		return _sql.Fetch<T>(_fetchQuery, new { Id = id });
+	}
+
+	public virtual Task Insert(T obj)
+	{
+		_insertQuery ??= _query.Insert<T>();
+		return _sql.Execute(_insertQuery, obj);
+	}
+
+	public virtual Task Update(T obj)
+	{
+		_updateQuery ??= _query.Update<T>();
+		return _sql.Execute(_updateQuery, obj);
+	}
+
+	public virtual Task<PaginatedResult<T>> Paginate(string query, object? pars = null, int page = 1, int size = 100)
+	{
+		return _sql.Paginate<T>(query, pars, page, size);
 	}
 }
 
 public abstract class OrmMapExtended<T> : OrmMap<T>
 	where T : DbObject
 {
-	private string? _fetchQuery;
-	private string? _insertQuery;
-	private string? _updateQuery;
-	private string? _paginateQuery;
-	private string? _insertReturnQuery;
-
-	private List<string> _queryCache = new();
+	private static string? _paginateQuery;
+	private static string? _allNonDeletedQuery;
+	private static List<string> _queryCache = new();
 
 	public OrmMapExtended(
-		IDbQueryBuilderService query,
+		IQueryService query,
 		ISqlService sql) : base(query, sql) { }
 
-	public virtual Task<T> Fetch(long id)
+	public virtual Task<T[]> All()
 	{
-		_fetchQuery ??= _query.SelectId<T>(TableName);
-		return _sql.Fetch<T>(_fetchQuery, new { id });
-	}
-
-	public virtual Task<long> InsertReturn(T obj)
-	{
-		_insertReturnQuery ??= _query.InsertReturn<T, long>(TableName, t => t.Id);
-		return _sql.ExecuteScalar<long>(_insertReturnQuery, obj);
-	}
-
-	public virtual Task Insert(T obj)
-	{
-		_insertQuery ??= _query.Insert<T>(TableName);
-		return _sql.Execute(_insertQuery, obj);
-	}
-
-	public virtual Task Update(T obj)
-	{
-		_updateQuery ??= _query.Update<T>(TableName);
-		return _sql.Execute(_updateQuery, obj);
-	}
-
-	public virtual async Task<PaginatedResult<T>> Paginate(string query, object? pars = null, int page = 1, int size = 100)
-	{
-		var p = new DynamicParameters(pars);
-		p.Add("offset", (page - 1) * size);
-		p.Add("size", size);
-
-		using var con = _sql.CreateConnection();
-		using var rdr = await con.QueryMultipleAsync(query, p);
-
-		var res = (await rdr.ReadAsync<T>()).ToArray();
-		var total = await rdr.ReadSingleAsync<long>();
-
-		var pages = (long)Math.Ceiling((double)total / size);
-		return new PaginatedResult<T>(pages, total, res);
+		_allNonDeletedQuery ??= _query.Select<T>(t => t.Null(a => a.DeletedAt));
+		return _sql.Get<T>(_allNonDeletedQuery);
 	}
 
 	public virtual Task<PaginatedResult<T>> Paginate(int page = 1, int size = 100)
 	{
-		_paginateQuery ??= _query.Pagniate<T, DateTime?>(TableName, (c) => { }, t => t.UpdatedAt);
+		_paginateQuery ??= _query.Paginate<T, DateTime?>(t => t.UpdatedAt);
 		return Paginate(_paginateQuery, null, page, size);
 	}
 
 	public async Task<(long id, bool isNew)> Upsert(T item, 
-		Action<PropertyExpressionBuilder<T>> conflicts,
-		Action<PropertyExpressionBuilder<T>>? inserts = null,
-		Action<PropertyExpressionBuilder<T>>? updates = null,
+		Action<IExpressionBuilder<T>> conflicts,
+		Action<IExpressionBuilder<T>>? inserts = null,
+		Action<IExpressionBuilder<T>>? updates = null,
 		List<string>? cache = null)
 	{
 		inserts ??= (v) => v.With(t => t.Id);
@@ -110,9 +89,9 @@ public abstract class OrmMapExtended<T> : OrmMap<T>
 		if (queryCache.Count != 3)
 		{
 			queryCache.Clear();
-			queryCache.Add(_query.Update(TableName, updates));
-			queryCache.Add(_query.InsertReturn(TableName, v => v.Id, inserts));
-			queryCache.Add(_query.Select(TableName, conflicts));
+			queryCache.Add(_query.Update(updates));
+			queryCache.Add(_query.Insert<T>() + " RETURNING id");
+			queryCache.Add(_query.Select(conflicts));
 		}
 
 		string update = _queryCache[0], insert = _queryCache[1], select = _queryCache[2];

@@ -1,12 +1,14 @@
-﻿namespace ScanlationBuddy.Database.Mappings;
+﻿using System;
+
+namespace ScanlationBuddy.Database.Mappings;
 
 public interface IUserDbService
 {
 	Task<(long id, bool isNew)> Upsert(BuddyUser user);
 
-	Task<BuddyUser> Fetch(long userId);
+	Task<BuddyUser?> Fetch(long userId);
 
-	Task<BuddyUser> Fetch(string platformId);
+	Task<BuddyUser?> Fetch(string platformId);
 
 	Task<int> UserCount();
 
@@ -19,10 +21,9 @@ public interface IUserDbService
 
 public class UserDbService : OrmMapExtended<BuddyUser>, IUserDbService
 {
-	private string? _getQuery;
-	public override string TableName => "buddy_user";
+	private static string? _getQuery;
 
-	public UserDbService(IDbQueryBuilderService query, ISqlService sql) : base(query, sql) { }
+	public UserDbService(IQueryService query, ISqlService sql) : base(query, sql) { }
 
 	public Task<int> UserCount()
 	{
@@ -34,11 +35,11 @@ public class UserDbService : OrmMapExtended<BuddyUser>, IUserDbService
 		return Upsert(user, v => v.With(t => t.PlatformId));
 	}
 	
-	public Task<BuddyUser> Fetch(string platformId)
+	public Task<BuddyUser?> Fetch(string platformId)
 	{
-		_getQuery ??= _query.Select<BuddyUser>(TableName, t => t.With(t => t.PlatformId));
+		_getQuery ??= _query.Select<BuddyUser>(t => t.With(t => t.PlatformId));
 
-		return _sql.Fetch<BuddyUser>(_getQuery, new { platformId });
+		return _sql.Fetch<BuddyUser>(_getQuery, new { PlatformId = platformId });
 	}
 
 	public async Task<PaginatedResult<BuddyUserRoles>> UsersRoles(UserFilters filters)
@@ -111,15 +112,15 @@ ORDER BY u.created_at DESC;";
 
 		var query = string.Format(QUERY, string.Join(" AND ", parts));
 
-		using var con = _sql.CreateConnection();
+		using var con = await _sql.CreateConnection();
 		using var rdr = await con.QueryMultipleAsync(query, pars);
 
 		var users = (await rdr.ReadAsync<BuddyUser>()).ToArray();
-		var total = await rdr.ReadSingleAsync<long>();
+		var total = await rdr.ReadSingleAsync<int>();
 		var roles = (await rdr.ReadAsync<BuddyRoleUser>()).ToArray();
 
 		var results = MapUsersRoles(users, roles).ToArray();
-		var pages = (long)Math.Ceiling((double)total / filters.Size);
+		var pages = (int)Math.Ceiling((double)total / filters.Size);
 		return new PaginatedResult<BuddyUserRoles>(pages, total, results);
 	}
 

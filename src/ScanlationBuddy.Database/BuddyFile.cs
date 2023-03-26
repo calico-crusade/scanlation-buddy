@@ -1,5 +1,6 @@
 ﻿namespace ScanlationBuddy.Database;
 
+[Table("buddy_file")]
 public class BuddyFile : DbObject
 {
 	[JsonPropertyName("filename")]

@@ -2,6 +2,7 @@
 //Please ensure they are listed aplhabetically... Also, no code should be included in this document.
 
 global using CardboardBox.Database;
+global using CardboardBox.Database.Generation;
 global using CardboardBox.Http;
 global using CardboardBox.Json;
 

@@ -9,9 +9,9 @@
 		<Compile Include="./../global.cs"></Compile>
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="CardboardBox.Database" Version="1.0.6" />
+	  <PackageReference Include="CardboardBox.Database.Sqlite" Version="1.0.0" />
 	  <PackageReference Include="CardboardBox.Extensions" Version="1.0.10" />
 	  <PackageReference Include="CardboardBox.Http" Version="1.0.3" />
-	  <PackageReference Include="MangaDexSharp" Version="1.0.7" />
+	  <PackageReference Include="MangaDexSharp" Version="1.0.8" />
 	</ItemGroup>
 </Project>

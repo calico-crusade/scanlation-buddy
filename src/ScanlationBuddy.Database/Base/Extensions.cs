@@ -1,43 +1,51 @@
 ﻿namespace ScanlationBuddy.Database;
 
-using Base;
 using Mappings;
 
 public static class Extensions
 {
     public static IServiceCollection AddDatabase(this IServiceCollection services)
 	{
-        MapConfig.AddMap(c =>
-        {
-            c.ForEntity<BuddyUser>()
-             .ForEntity<BuddyProject>()
-             .ForEntity<BuddyRole>()
-             .ForEntity<BuddyRoleUser>()
-             .ForEntity<BuddyUserRole>()
-             .ForEntity<BuddyFile>()
-             .ForEntity<BuddyConfig>();
-        });
-
-        MapConfig.StartMap();
-
-		static void SwitchMap<T, T2>() where T2: SqlMapper.TypeHandler<T>, new()
-		{
-            SqlMapper.RemoveTypeMap(typeof(T));
-            SqlMapper.AddTypeHandler(new T2());
-		}
-
-        SwitchMap<DateTime, DateTimeHandler>();
-        SwitchMap<DateTime?, NullableDateTimeHandler>();
-        SwitchMap<bool, BooleanHandler>();
-        SwitchMap<bool?, NullableBooleanHandler>();
-        SwitchMap<string[], ArrayHandler<string>>();
-		SwitchMap<int[], ArrayHandler<int>>();
-        SwitchMap<double[], ArrayHandler<double>>();
-
         return services
-			.AddSingleton<ISqlService, SqliteService>()
-            .AddTransient<IDbQueryBuilderService, SqliteDbQueryBuilderService>()
-            
+            .AddSqlService(c =>
+            {
+                c.AddSQLite<SqliteConfig>(f => f.OnInit(async con => 
+                {
+                    var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts");
+                    if (!Directory.Exists(path)) return;
+
+                    var files = Directory.GetFiles(path, "*.sql", SearchOption.AllDirectories)
+                        .OrderBy(t => Path.GetFileName(t))
+                        .ToArray();
+
+                    if (files.Length <= 0) return;
+
+                    foreach(var file in files)
+                    {
+                        var context = await File.ReadAllTextAsync(file);
+                        await con.ExecuteAsync(context);
+                    }
+                }))
+                .ConfigureGeneration(c => c.WithCamelCaseChange())
+                .ConfigureTypes(c => 
+                {
+                    c.CamelCase()
+                     .Entity<BuddyUser>()
+                     .Entity<BuddyProject>()
+                     .Entity<BuddyRole>()
+                     .Entity<BuddyRoleUser>()
+                     .Entity<BuddyUserRole>()
+                     .Entity<BuddyFile>()
+                     .Entity<BuddyConfig>()
+                     .Entity<BuddyAsset>();
+
+                    c.PolyfillBooleanHandler()
+                     .PolyfillDateTimeHandler()
+                     .ArrayHandler<string>()
+                     .ArrayHandler<int>()
+                     .ArrayHandler<double>();
+                });
+            })            
             .AddTransient<IUserDbService, UserDbService>()
             .AddTransient<IProjectDbService, ProjectDbService>()
             .AddTransient<IRoleDbService, RoleDbService>()

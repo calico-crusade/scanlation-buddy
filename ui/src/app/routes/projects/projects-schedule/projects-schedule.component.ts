@@ -59,4 +59,8 @@ export class ProjectsScheduleComponent {
         const generator = new CalendarGenerator<FakeManga>(manga, (t) => t.createdAt);
         return generator.generate(new Date());
     }
+
+    invalidateManga(){
+        this._manga$.invalidate();
+    }
 }

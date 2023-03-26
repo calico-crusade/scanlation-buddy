@@ -7,8 +7,8 @@
 	length INTEGER NOT NULL,
 	creator_id INTEGER NOT NULL,
 
-	created_at TEXT NOT NULL,
-	updated_at TEXT NOT NULL,
+	created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	deleted_at TEXT,
 
 	FOREIGN KEY(creator_id) REFERENCES buddy_user(id)

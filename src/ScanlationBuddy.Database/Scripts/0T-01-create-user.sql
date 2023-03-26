@@ -8,8 +8,8 @@
     provider TEXT NOT NULL,
     provider_id TEXT NOT NULL,
 
-	created_at TEXT NOT NULL,
-	updated_at TEXT NOT NULL,
+	created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	deleted_at TEXT,
 
 	UNIQUE(provider_id)

@@ -15,11 +15,9 @@ public interface IConfigDbService
 
 public class ConfigDbService : OrmMapExtended<BuddyConfig>, IConfigDbService
 {
-	public override string TableName => "buddy_config";
-
 	private CacheItem<BuddyConfig[]> _cache;
 
-	public ConfigDbService(IDbQueryBuilderService query, ISqlService sql) : base(query, sql) 
+	public ConfigDbService(IQueryService query, ISqlService sql) : base(query, sql) 
 	{
 		_cache = new CacheItem<BuddyConfig[]>(base.All);
 	}
@@ -64,6 +62,5 @@ public class ConfigDbService : OrmMapExtended<BuddyConfig>, IConfigDbService
 
 			await Insert(def);
 		}
-
 	}
 }

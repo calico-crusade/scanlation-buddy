@@ -4,7 +4,7 @@ public interface IRoleDbService
 {
 	Task<int> RoleCount();
 
-	Task<BuddyRole> Fetch(long id);
+	Task<BuddyRole?> Fetch(long id);
 
 	Task Insert(BuddyRole role);
 
@@ -21,12 +21,9 @@ public interface IRoleDbService
 
 public class RoleDbService : OrmMapExtended<BuddyRole>, IRoleDbService
 {
-	private const string TABLE_NAME_USER_ROLE = "buddy_user_role";
-	private string? _insertUserRole;
+	private static string? _insertUserRole;
 
-	public override string TableName => "buddy_role";
-
-	public RoleDbService(IDbQueryBuilderService query, ISqlService sql) : base(query, sql) { }
+	public RoleDbService(IQueryService query, ISqlService sql) : base(query, sql) { }
 
 	public Task<int> RoleCount()
 	{
@@ -58,7 +55,7 @@ WHERE
 	{
 		const string FETCH = "SELECT * FROM buddy_user_role WHERE user_id = :userId AND role_id = :roleId";
 		const string DELETE = "DELETE FROM buddy_user_role WHERE id = :id";
-		_insertUserRole ??= _query.Insert<BuddyUserRole>(TABLE_NAME_USER_ROLE);
+		_insertUserRole ??= _query.Insert<BuddyUserRole>();
 
 		var context = new BuddyUserRole
 		{

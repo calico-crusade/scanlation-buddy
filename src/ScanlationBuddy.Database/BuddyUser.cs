@@ -1,5 +1,6 @@
 ﻿namespace ScanlationBuddy.Database;
 
+[Table("buddy_user")]
 public class BuddyUser : DbObject
 {
 	[JsonPropertyName("username")]
@@ -17,7 +18,7 @@ public class BuddyUser : DbObject
 	[JsonPropertyName("provider")]
 	public string Provider { get; set; } = string.Empty;
 
-	[JsonPropertyName("providerId")]
+	[JsonPropertyName("providerId"), Column(Unique = true)]
 	public string ProviderId { get; set; } = string.Empty;
 }
 

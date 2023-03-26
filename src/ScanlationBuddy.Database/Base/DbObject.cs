@@ -3,15 +3,23 @@
 public abstract class DbObject
 {
 	[JsonPropertyName("id")]
-	public long Id { get; set; }
+	[Column(PrimaryKey = true, ExcludeInserts = true, ExcludeUpdates = true)]
+	public virtual long Id { get; set; }
 
 	[JsonPropertyName("createdAt")]
-	public DateTime? CreatedAt { get; set; }
+	[Column(ExcludeInserts = true, ExcludeUpdates = true, OverrideValue = "CURRENT_TIMESTAMP")]
+	public virtual DateTime? CreatedAt { get; set; }
 
 	[JsonPropertyName("updatedAt")]
-	public DateTime? UpdatedAt { get; set; }
+	[Column(ExcludeInserts = true, OverrideValue = "CURRENT_TIMESTAMP")]
+	public virtual DateTime? UpdatedAt { get; set; }
 
 	[JsonPropertyName("deletedAt")]
-	public DateTime? DeletedAt { get; set; }
+	public virtual DateTime? DeletedAt { get; set; }
 }
 
+public abstract class UniqueDeletedDbObject : DbObject
+{
+	[JsonPropertyName("deletedAt"), Column(Unique = true)]
+	public override DateTime? DeletedAt { get; set; }
+}

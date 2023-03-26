@@ -1,8 +1,9 @@
 ﻿namespace ScanlationBuddy.Database;
 
-public class BuddyRole : DbObject
+[Table("buddy_role")]
+public class BuddyRole : UniqueDeletedDbObject
 {
-	[JsonPropertyName("name")]
+	[JsonPropertyName("name"), Column(Unique = true)]
 	public string Name { get; set; } = string.Empty;
 
 	[JsonPropertyName("permissions")]

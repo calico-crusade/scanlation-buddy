@@ -1,8 +1,9 @@
 ﻿namespace ScanlationBuddy.Database;
 
+[Table("buddy_config")]
 public class BuddyConfig : DbObject
 {
-	[JsonPropertyName("key")]
+	[JsonPropertyName("key"), Column(Unique = true)]
 	public string Key { get; set; } = string.Empty;
 
 	[JsonPropertyName("value")]

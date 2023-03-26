@@ -1,6 +1,7 @@
 ﻿namespace ScanlationBuddy.Database;
 
-public class BuddyAsset : DbObject
+[Table("buddy_asset")]
+public class BuddyAsset : UniqueDeletedDbObject
 {
 	[JsonPropertyName("fileId")]
 	public long FileId { get; set; }
@@ -11,7 +12,7 @@ public class BuddyAsset : DbObject
 	[JsonPropertyName("replacedWith")]
 	public long? ReplacedWith { get; set; }
 
-	[JsonPropertyName("name")]
+	[JsonPropertyName("name"), Column(Unique = true)]
 	public string Name { get; set; } = string.Empty;
 
 	[JsonPropertyName("description")]
